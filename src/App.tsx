@@ -81,6 +81,10 @@ const getErrorMessage = (error: unknown): string => {
   return 'An unknown error occurred during generation.';
 };
 
+const revokePdfUrls = (files: GeneratedPdfFileInfo[]): void => {
+  files.forEach((file) => URL.revokeObjectURL(file.url));
+};
+
 const revokeCashPdfUrls = (files: CashPdfFileInfo[]): void => {
   files.forEach((file) => URL.revokeObjectURL(file.url));
 };
@@ -265,6 +269,7 @@ export const App: React.FC = () => {
     cancellationRef.current = false;
     setCurrentScreen('generation');
     setBatchData(null);
+    revokePdfUrls(pdfFiles);
     setPdfFiles([]);
 
     const total = config.totalQuantity;
@@ -280,6 +285,7 @@ export const App: React.FC = () => {
       elapsedSeconds: 0,
     });
 
+    let generatedPdfResults: GeneratedPdfFileInfo[] = [];
     try {
       const linkQrDataUrl = await generateLinktreeQr(config.linktreeUrl);
       const uniformGeneratedAt = new Date().toISOString();
@@ -334,6 +340,7 @@ export const App: React.FC = () => {
         },
         () => cancellationRef.current
       );
+      generatedPdfResults = pdfResults;
 
       const completedBatch: GeneratedBatchData = {
         config,
@@ -361,6 +368,7 @@ export const App: React.FC = () => {
         colors: ['#f59e0b', '#dc2626', '#10b981', '#fbbf24', '#ffffff'],
       });
     } catch (error) {
+      revokePdfUrls(generatedPdfResults);
       const message = getErrorMessage(error);
       if (message === 'Generation cancelled by user') {
         setProgress({
@@ -407,6 +415,7 @@ export const App: React.FC = () => {
       elapsedSeconds: 0,
     });
 
+    let generatedPdfResults: CashPdfFileInfo[] = [];
     try {
       const linktreeQrDataUrl = cashConfig.includeLinktreeQr
         ? await generateLinktreeQr(cashConfig.linktreeUrl)
@@ -463,6 +472,7 @@ export const App: React.FC = () => {
         },
         () => cashCancellationRef.current
       );
+      generatedPdfResults = pdfResults;
 
       const completedBatch: CashGeneratedBatchData = {
         config: cashConfig,
@@ -491,6 +501,7 @@ export const App: React.FC = () => {
         colors: ['#f59e0b', '#dc2626', '#10b981', '#fbbf24', '#ffffff'],
       });
     } catch (error) {
+      revokeCashPdfUrls(generatedPdfResults);
       const message = getErrorMessage(error);
       if (message === 'Generation cancelled by user') {
         setCashProgress({
@@ -525,6 +536,7 @@ export const App: React.FC = () => {
 
   const handleStartNewBatch = (): void => {
     setBatchData(null);
+    revokePdfUrls(pdfFiles);
     setPdfFiles([]);
     setProgress(IDLE_PROGRESS);
     setCurrentScreen('config');

@@ -141,8 +141,9 @@ export async function generateAllPdfFiles(
   const numFiles = Math.ceil(total / perFile);
   const pdfFiles: GeneratedPdfFileInfo[] = [];
 
-  // Pre-render static template ONCE for maximum performance
-  onProgress?.(0, total, 'Preparing high-resolution coupon template...');
+  try {
+    // Pre-render static template ONCE for maximum performance
+    onProgress?.(0, total, 'Preparing high-resolution coupon template...');
   const templateCanvas = await createStaticCouponTemplate(config, linktreeQrDataUrl);
 
   let globalCouponIndex = 0;
@@ -242,5 +243,9 @@ export async function generateAllPdfFiles(
     await new Promise((r) => setTimeout(r, 0));
   }
 
-  return pdfFiles;
+    return pdfFiles;
+  } catch (error) {
+    pdfFiles.forEach((file) => URL.revokeObjectURL(file.url));
+    throw error;
+  }
 }

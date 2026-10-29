@@ -52,6 +52,11 @@ final class FM_Cash_Claims_Admin {
 		$action = isset( $_REQUEST['action'] ) && is_string( $_REQUEST['action'] )
 			? sanitize_key( wp_unslash( $_REQUEST['action'] ) )
 			: '';
+		if ( '-1' === $action || '' === $action ) {
+			$action = isset( $_REQUEST['action2'] ) && is_string( $_REQUEST['action2'] )
+				? sanitize_key( wp_unslash( $_REQUEST['action2'] ) )
+				: '';
+		}
 		if ( 'mark_paid' !== $action ) {
 			return;
 		}
@@ -1254,8 +1259,8 @@ final class FM_Cash_Claims_Admin {
 		check_admin_referer( 'fm_cash_delete_batch_' . $batch_id );
 
 		$result = $this->db->delete_batch( $batch_id );
-		if ( is_wp_error( $result ) ) {
-			$this->store_notice( 'error', $result->get_error_message() );
+		if ( is_wp_error( $result ) || true !== $result ) {
+			$this->store_notice( 'error', is_wp_error( $result ) ? $result->get_error_message() : __( 'The batch could not be deleted.', 'fm-cash-claims' ) );
 		} else {
 			$this->store_notice( 'success', __( 'Batch deleted.', 'fm-cash-claims' ) );
 		}
@@ -1282,9 +1287,10 @@ final class FM_Cash_Claims_Admin {
 			: '';
 		$result = $this->db->mark_claim_paid( $claim_id, get_current_user_id(), $note );
 
-		if ( is_wp_error( $result ) ) {
+		if ( is_wp_error( $result ) || true !== $result ) {
+			$message = is_wp_error( $result ) ? $result->get_error_message() : __( 'The claim could not be marked as paid.', 'fm-cash-claims' );
 			$this->db->log_scan( '', (int) $claim->coupon_id, 'admin_paid_failed', $this->db->get_client_ip(), 'wp-admin' );
-			$this->store_notice( 'error', $result->get_error_message() );
+			$this->store_notice( 'error', $message );
 		} else {
 			$this->db->log_scan( '', (int) $claim->coupon_id, 'admin_paid', $this->db->get_client_ip(), 'wp-admin' );
 			$this->store_notice( 'success', __( 'Claim marked as paid. The coupon is now paid.', 'fm-cash-claims' ) );
@@ -1312,8 +1318,9 @@ final class FM_Cash_Claims_Admin {
 		$claim  = $this->db->get_claim( $claim_id );
 		$result = $this->db->reject_claim( $claim_id, $reason );
 
-		if ( is_wp_error( $result ) ) {
-			$this->store_notice( 'error', $result->get_error_message() );
+		if ( is_wp_error( $result ) || true !== $result ) {
+			$message = is_wp_error( $result ) ? $result->get_error_message() : __( 'The claim could not be rejected.', 'fm-cash-claims' );
+			$this->store_notice( 'error', $message );
 		} else {
 			if ( $claim ) {
 				$this->db->log_scan( '', (int) $claim->coupon_id, 'admin_rejected', $this->db->get_client_ip(), 'wp-admin' );
@@ -1335,8 +1342,9 @@ final class FM_Cash_Claims_Admin {
 		$claim  = $this->db->get_claim( $claim_id );
 		$result = $this->db->reopen_claim( $claim_id );
 
-		if ( is_wp_error( $result ) ) {
-			$this->store_notice( 'error', $result->get_error_message() );
+		if ( is_wp_error( $result ) || true !== $result ) {
+			$message = is_wp_error( $result ) ? $result->get_error_message() : __( 'The claim could not be reopened.', 'fm-cash-claims' );
+			$this->store_notice( 'error', $message );
 			$this->redirect( FM_Cash_Claims_Util::admin_claim_url( $claim_id ) );
 		}
 

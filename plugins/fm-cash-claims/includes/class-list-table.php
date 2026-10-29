@@ -70,7 +70,11 @@ final class FM_Cash_Claims_List_Table extends WP_List_Table {
 
 		check_admin_referer( 'bulk-' . $this->_args['plural'] );
 
-		$claim_ids = isset( $_REQUEST['claim'] ) ? (array) wp_unslash( $_REQUEST['claim'] ) : array();
+		$claim_ids = isset( $_REQUEST['claim'] ) && is_array( $_REQUEST['claim'] )
+			? array_map( 'sanitize_text_field', wp_unslash( $_REQUEST['claim'] ) )
+			: ( isset( $_REQUEST['claim'] ) && is_scalar( $_REQUEST['claim'] )
+				? array( sanitize_text_field( wp_unslash( (string) $_REQUEST['claim'] ) ) )
+				: array() );
 		$claim_ids = array_values( array_filter( array_map( 'absint', $claim_ids ) ) );
 
 		if ( array() === $claim_ids ) {
@@ -163,12 +167,14 @@ final class FM_Cash_Claims_List_Table extends WP_List_Table {
 		$where_sql = implode( ' AND ', $where );
 
 		$allowed_orderby = array( 'claim_ref', 'coupon_code', 'prize_amount', 'status', 'claimed_at' );
-		$orderby         = isset( $_GET['orderby'] ) ? sanitize_key( wp_unslash( (string) $_GET['orderby'] ) ) : 'claimed_at';
+		$orderby         = isset( $_GET['orderby'] ) && is_string( $_GET['orderby'] )
+			? sanitize_key( wp_unslash( $_GET['orderby'] ) )
+			: 'claimed_at';
 		if ( ! in_array( $orderby, $allowed_orderby, true ) ) {
 			$orderby = 'claimed_at';
 		}
 
-		$order = isset( $_GET['order'] ) && 'asc' === strtolower( sanitize_key( wp_unslash( (string) $_GET['order'] ) ) ) ? 'ASC' : 'DESC';
+		$order = isset( $_GET['order'] ) && is_string( $_GET['order'] ) && 'asc' === strtolower( sanitize_key( wp_unslash( $_GET['order'] ) ) ) ? 'ASC' : 'DESC';
 
 		$count_sql = "SELECT COUNT(*) FROM {$table} WHERE {$where_sql}";
 		$total     = (int) $wpdb->get_var( $params ? $wpdb->prepare( $count_sql, $params ) : $count_sql );
@@ -185,7 +191,7 @@ final class FM_Cash_Claims_List_Table extends WP_List_Table {
 		}
 
 		$per_page = 30;
-		$paged    = max( 1, (int) ( $_GET['paged'] ?? 1 ) );
+		$paged    = isset( $_GET['paged'] ) && is_scalar( $_GET['paged'] ) ? max( 1, (int) $_GET['paged'] ) : 1;
 		$offset   = ( $paged - 1 ) * $per_page;
 
 		$query_params = $params;
@@ -293,10 +299,10 @@ final class FM_Cash_Claims_List_Table extends WP_List_Table {
 			return;
 		}
 
-		$status     = isset( $_GET['status'] ) ? sanitize_key( wp_unslash( (string) $_GET['status'] ) ) : '';
-		$batch      = isset( $_GET['batch'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['batch'] ) ) : '';
-		$claim_date = isset( $_GET['claim_date'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['claim_date'] ) ) : '';
-		$search     = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['s'] ) ) : '';
+		$status     = isset( $_GET['status'] ) && is_string( $_GET['status'] ) ? sanitize_key( wp_unslash( $_GET['status'] ) ) : '';
+		$batch      = isset( $_GET['batch'] ) && is_string( $_GET['batch'] ) ? sanitize_text_field( wp_unslash( $_GET['batch'] ) ) : '';
+		$claim_date = isset( $_GET['claim_date'] ) && is_string( $_GET['claim_date'] ) ? sanitize_text_field( wp_unslash( $_GET['claim_date'] ) ) : '';
+		$search     = isset( $_GET['s'] ) && is_string( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
 		?>
 		<div class="alignleft actions fm-filter-row">
 			<input type="hidden" name="page" value="fm-cash-claims-claims" />
@@ -347,9 +353,13 @@ final class FM_Cash_Claims_List_Table extends WP_List_Table {
 	}
 
 	private function redirect_clean(): void {
-		$args = $_GET;
-		unset( $args['action'], $args['action2'], $args['claim'], $args['_wpnonce'], $args['_wp_http_referer'] );
-		$args['page'] = 'fm-cash-claims-claims';
+		$allowed_keys = array( 'status', 'batch', 'claim_date', 's', 'orderby', 'order', 'paged' );
+		$args         = array( 'page' => 'fm-cash-claims-claims' );
+		foreach ( $allowed_keys as $key ) {
+			if ( isset( $_GET[ $key ] ) && is_scalar( $_GET[ $key ] ) && '' !== (string) $_GET[ $key ] ) {
+				$args[ $key ] = sanitize_text_field( wp_unslash( (string) $_GET[ $key ] ) );
+			}
+		}
 
 		wp_safe_redirect( add_query_arg( $args, admin_url( 'admin.php' ) ) );
 		exit;

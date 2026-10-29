@@ -468,9 +468,12 @@ final class FM_Cash_Claims_DB {
 		$coupon_updated = $wpdb->update(
 			$coupons,
 			array( 'status' => 'paid' ),
-			array( 'id' => (int) $claim->coupon_id ),
+			array(
+				'id'     => (int) $claim->coupon_id,
+				'status' => 'claimed',
+			),
 			array( '%s' ),
-			array( '%d' )
+			array( '%d', '%s' )
 		);
 
 		if ( 1 !== $coupon_updated ) {
@@ -554,9 +557,12 @@ final class FM_Cash_Claims_DB {
 				'status'     => 'issued',
 				'claimed_at' => null,
 			),
-			array( 'id' => (int) $claim->coupon_id ),
+			array(
+				'id'     => (int) $claim->coupon_id,
+				'status' => 'claimed',
+			),
 			array( '%s', '%s' ),
-			array( '%d' )
+			array( '%d', '%s' )
 		);
 
 		if ( 1 !== $coupon_updated ) {
@@ -588,16 +594,48 @@ final class FM_Cash_Claims_DB {
 			return new WP_Error( 'has_claims', __( 'This batch has claims and cannot be deleted.', 'fm-cash-claims' ) );
 		}
 
+		$claimed_coupons = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$this->coupons_table()} WHERE batch_id = %s AND status != 'issued'",
+				$batch_id
+			)
+		);
+
+		if ( $claimed_coupons > 0 ) {
+			return new WP_Error( 'has_claims', __( 'This batch has claimed or paid coupons and cannot be deleted.', 'fm-cash-claims' ) );
+		}
+
+		$expected_coupons = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$this->coupons_table()} WHERE batch_id = %s",
+				$batch_id
+			)
+		);
+
+		$expected_tiers = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$this->tiers_table()} WHERE batch_id = %s",
+				$batch_id
+			)
+		);
+
 		$wpdb->query( 'START TRANSACTION' );
 
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE {$this->scan_log_table()} SET coupon_id = NULL WHERE coupon_id IN (SELECT id FROM {$this->coupons_table()} WHERE batch_id = %s)",
+				$batch_id
+			)
+		);
+
 		$coupons_deleted = $wpdb->delete( $this->coupons_table(), array( 'batch_id' => $batch_id ), array( '%s' ) );
-		if ( false === $coupons_deleted ) {
+		if ( false === $coupons_deleted || ( $expected_coupons > 0 && $coupons_deleted !== $expected_coupons ) ) {
 			$wpdb->query( 'ROLLBACK' );
 			return new WP_Error( 'db_error', __( 'The batch coupons could not be deleted.', 'fm-cash-claims' ) );
 		}
 
 		$tiers_deleted = $wpdb->delete( $this->tiers_table(), array( 'batch_id' => $batch_id ), array( '%s' ) );
-		if ( false === $tiers_deleted ) {
+		if ( false === $tiers_deleted || ( $expected_tiers > 0 && $tiers_deleted !== $expected_tiers ) ) {
 			$wpdb->query( 'ROLLBACK' );
 			return new WP_Error( 'db_error', __( 'The batch prize tiers could not be deleted.', 'fm-cash-claims' ) );
 		}

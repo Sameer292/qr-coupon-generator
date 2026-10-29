@@ -14,6 +14,7 @@ const isHttpUrl = (value: string): boolean => {
   }
 };
 
+// eslint-disable-next-line no-control-regex
 const hasControlCharacters = (value: string): boolean => /[\u0000-\u001F\u007F]/.test(value);
 
 export const validateCashConfig = (
