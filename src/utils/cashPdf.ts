@@ -174,7 +174,7 @@ export const generateCashPdfFiles = async (
           if (page > 0) {
             pdf.addPage('a4', 'portrait');
           }
-          drawCashCropMarks(pdf, `${formatNpr(tier.amount)} Tier • Page ${page + 1} of ${pageCount}`);
+          drawCashCropMarks(pdf, `Sheet ${page + 1} of ${pageCount}`);
 
           const coupon = chunk[page];
           const claimQrDataUrl = await generateClaimQr(config.claimBaseUrl, coupon.qr_token);

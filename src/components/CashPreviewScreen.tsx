@@ -144,8 +144,8 @@ export const CashPreviewScreen: React.FC<CashPreviewScreenProps> = ({
             Preview the Printed Voucher
           </h2>
           <p className="text-stone-400 text-sm mt-1 max-w-2xl">
-            This is the exact 15cm × 20cm (150mm × 200mm) portrait voucher. The cash prize amount is intentionally absent
-            from the physical print; the claim page reveals it from the secret QR token.
+            This is the exact 15cm × 20cm (150mm × 200mm) portrait voucher with festive Tihar theme. The cash prize amount,
+            batch number, and coupon code are absent from the physical print; the claim page reveals the prize from the secret QR token.
           </p>
         </div>
 
@@ -176,8 +176,8 @@ export const CashPreviewScreen: React.FC<CashPreviewScreenProps> = ({
                 <Printer className="w-4 h-4 text-amber-400" />
                 Voucher Design (15cm × 20cm)
               </h3>
-              <span className="text-[10px] uppercase tracking-wider text-stone-400 font-mono">
-                Sample: {sampleCode}
+              <span className="text-[10px] uppercase tracking-wider text-amber-400 font-semibold bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/30">
+                Tihar Edition • QR Scan Only
               </span>
             </div>
 
@@ -291,8 +291,8 @@ export const CashPreviewScreen: React.FC<CashPreviewScreenProps> = ({
                       </span>
                     </div>
                     <div className="mt-2 flex items-center justify-between gap-2 text-[10px] text-stone-400 font-mono">
-                      <span>
-                        {tier.codeStart} → {tier.codeEnd}
+                      <span title="Internal manifest reference for payout tracking">
+                        Ref: {tier.codeStart} → {tier.codeEnd}
                       </span>
                       <span className="text-emerald-400">{formatNpr(tier.totalValue)}</span>
                     </div>
