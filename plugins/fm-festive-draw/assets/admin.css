@@ -1,0 +1,238 @@
+/**
+ * Fresh Masala Festive Draw - Admin Dashboard Stylesheet
+ */
+
+.fm-admin-wrap {
+	max-width: 1280px;
+	margin-top: 15px;
+}
+
+/* Status Ribbon */
+.fm-status-ribbon {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	padding: 10px 16px;
+	margin: 15px 0 20px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.fm-ribbon-tz {
+	font-size: 13px;
+	color: #64748b;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+/* KPI Cards Grid */
+.fm-kpi-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+.fm-kpi-card {
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 10px;
+	padding: 18px 20px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+	position: relative;
+	overflow: hidden;
+}
+
+.fm-kpi-card::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 4px;
+	background: #3b82f6;
+}
+
+.fm-kpi-card-green::before { background: #10b981; }
+.fm-kpi-card-gold::before { background: #f59e0b; }
+.fm-kpi-card-purple::before { background: #8b5cf6; }
+
+.fm-kpi-title {
+	font-size: 13px;
+	font-weight: 600;
+	color: #64748b;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-bottom: 6px;
+}
+
+.fm-kpi-val {
+	font-size: 28px;
+	font-weight: 800;
+	color: #0f172a;
+	line-height: 1.1;
+}
+
+.fm-kpi-sub {
+	font-size: 12px;
+	color: #94a3b8;
+	margin-top: 6px;
+}
+
+/* Weekly Pills */
+.fm-week-pill-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 12px;
+	margin-bottom: 24px;
+}
+
+.fm-week-pill-card {
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	padding: 12px 14px;
+}
+
+.fm-week-live {
+	border-color: #10b981;
+	background: #f0fdf4;
+}
+
+.fm-week-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 13px;
+	margin-bottom: 4px;
+}
+
+.fm-live-dot {
+	width: 8px;
+	height: 8px;
+	background: #10b981;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+.fm-week-count {
+	font-size: 18px;
+	font-weight: 700;
+	color: #0f172a;
+}
+
+.fm-week-count small {
+	font-size: 12px;
+	font-weight: 400;
+	color: #64748b;
+}
+
+/* Badges */
+.fm-badge {
+	display: inline-block;
+	padding: 3px 8px;
+	font-size: 11px;
+	font-weight: 700;
+	border-radius: 4px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.fm-badge-neutral { background: #f1f5f9; color: #475569; }
+.fm-badge-success { background: #dcfce7; color: #15803d; }
+.fm-badge-gold { background: #fef3c7; color: #b45309; }
+.fm-badge-purple { background: #f3e8ff; color: #6b21a8; }
+.fm-badge-danger { background: #fee2e2; color: #b91c1c; }
+
+.fm-code-badge {
+	font-family: monospace;
+	font-size: 13px;
+	background: #f8fafc;
+	padding: 2px 6px;
+	border-radius: 4px;
+	border: 1px solid #e2e8f0;
+	color: #b91c1c;
+}
+
+/* Cards & Forms */
+.fm-card {
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 10px;
+	padding: 24px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.fm-grid-2col {
+	display: grid;
+	grid-template-columns: 3fr 2fr;
+	gap: 20px;
+}
+
+@media (max-width: 960px) {
+	.fm-grid-2col {
+		grid-template-columns: 1fr;
+	}
+}
+
+.fm-info-box {
+	display: flex;
+	align-items: center;
+	background: #f0f9ff;
+	border: 1px solid #bae6fd;
+	border-radius: 8px;
+	padding: 14px 18px;
+	margin: 16px 0;
+}
+
+.fm-export-bar {
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	padding: 12px 18px;
+	margin-bottom: 20px;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.fm-inline-form {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.fm-btn-gold {
+	background: #d97706 !important;
+	border-color: #b45309 !important;
+	color: #fff !important;
+	box-shadow: 0 2px 4px rgba(217, 119, 6, 0.3) !important;
+}
+
+.fm-btn-gold:hover {
+	background: #b45309 !important;
+}
+
+/* List Table Polish */
+.fm-admin-wrap .wp-list-table {
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.fm-admin-wrap .wp-list-table th {
+	font-weight: 700;
+	color: #334155;
+	background: #f8fafc;
+	padding: 12px 10px;
+}
+
+.fm-admin-wrap .wp-list-table td {
+	padding: 12px 10px;
+	vertical-align: middle;
+}
+

@@ -4,30 +4,30 @@ import { createStaticCouponTemplate, renderCouponToCanvas } from './couponCanvas
 import { generateVerificationQr } from './qr';
 
 // A4 dimensions in mm
-const PAGE_WIDTH_MM = 210;
-const PAGE_HEIGHT_MM = 297;
+export const PAGE_WIDTH_MM = 210;
+export const PAGE_HEIGHT_MM = 297;
 
 // Visiting Card coupon dimensions in mm
-const CARD_WIDTH_MM = 90;
-const CARD_HEIGHT_MM = 50;
-const GUTTER_X_MM = 5;
-const GUTTER_Y_MM = 5;
+export const CARD_WIDTH_MM = 90;
+export const CARD_HEIGHT_MM = 50;
+export const GUTTER_X_MM = 5;
+export const GUTTER_Y_MM = 5;
 
 // Grid layout: 2 columns x 5 rows = 10 cards per page
-const COLS = 2;
-const ROWS = 5;
-const CARDS_PER_PAGE = COLS * ROWS; // 10
+export const COLS = 2;
+export const ROWS = 5;
+export const CARDS_PER_PAGE = COLS * ROWS; // 10
 
 // Calculated margins for perfect page centering
 const TOTAL_GRID_W = COLS * CARD_WIDTH_MM + (COLS - 1) * GUTTER_X_MM; // 185mm
 const TOTAL_GRID_H = ROWS * CARD_HEIGHT_MM + (ROWS - 1) * GUTTER_Y_MM; // 270mm
-const MARGIN_LEFT = (PAGE_WIDTH_MM - TOTAL_GRID_W) / 2; // 12.5mm
-const MARGIN_TOP = (PAGE_HEIGHT_MM - TOTAL_GRID_H) / 2; // 13.5mm
+export const MARGIN_LEFT = (PAGE_WIDTH_MM - TOTAL_GRID_W) / 2; // 12.5mm
+export const MARGIN_TOP = (PAGE_HEIGHT_MM - TOTAL_GRID_H) / 2; // 13.5mm
 
 /**
  * Draws print registration crop marks and cutting guides on an A4 page
  */
-function drawCropMarks(pdf: jsPDF): void {
+export function drawCropMarks(pdf: jsPDF, headerText?: string): void {
   pdf.setDrawColor(160, 160, 160);
   pdf.setLineWidth(0.15);
   pdf.setFontSize(7);
@@ -35,7 +35,8 @@ function drawCropMarks(pdf: jsPDF): void {
 
   // Top header text on margin
   pdf.text(
-    'Fresh Masala Promotional Coupons — Standard Visiting Card Size (90mm x 50mm) • 10 cards/page',
+    headerText ||
+      'Fresh Masala Promotional Coupons — Standard Visiting Card Size (90mm x 50mm) • 10 cards/page',
     PAGE_WIDTH_MM / 2,
     MARGIN_TOP - 5,
     { align: 'center' }

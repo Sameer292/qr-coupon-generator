@@ -7,8 +7,8 @@ import QRCode from 'qrcode';
  * Margin (quiet zone): 2 modules (~4mm)
  * Pure white background (#FFFFFF) with solid dark squares (#000000)
  */
-export async function generateLinktreeQr(linktreeUrl: string): Promise<string> {
-  return QRCode.toDataURL(linktreeUrl, {
+export const generateLinktreeQr = async (linktreeUrl: string): Promise<string> =>
+  QRCode.toDataURL(linktreeUrl, {
     errorCorrectionLevel: 'M',
     width: 180,
     margin: 2,
@@ -17,7 +17,15 @@ export async function generateLinktreeQr(linktreeUrl: string): Promise<string> {
       light: '#ffffff',
     },
   });
-}
+
+/**
+ * Builds a token URL without corrupting existing query parameters.
+ */
+export const buildTokenUrl = (baseUrl: string, token: string): string => {
+  const url = new URL(baseUrl.trim());
+  url.searchParams.set('t', token);
+  return url.toString();
+};
 
 /**
  * Generates the Verification QR code (QR #2).
@@ -26,16 +34,11 @@ export async function generateLinktreeQr(linktreeUrl: string): Promise<string> {
  * Margin (quiet zone): 2 modules (~4mm)
  * Pure white background (#FFFFFF) with solid dark squares (#000000)
  */
-export async function generateVerificationQr(
+export const generateVerificationQr = async (
   verificationBaseUrl: string,
   token: string
-): Promise<string> {
-  const base = verificationBaseUrl.trim();
-  const fullUrl = base.includes('?t=') || base.endsWith('?t=') 
-    ? `${base}${token}`
-    : `${base.replace(/\/?$/, '')}/?t=${token}`;
-
-  return QRCode.toDataURL(fullUrl, {
+): Promise<string> =>
+  QRCode.toDataURL(buildTokenUrl(verificationBaseUrl, token), {
     errorCorrectionLevel: 'Q',
     width: 220,
     margin: 2,
@@ -44,4 +47,17 @@ export async function generateVerificationQr(
       light: '#ffffff',
     },
   });
-}
+
+/**
+ * Generates the cash-claim QR. The token maps to the coupon row in WordPress.
+ */
+export const generateClaimQr = async (claimBaseUrl: string, token: string): Promise<string> =>
+  QRCode.toDataURL(buildTokenUrl(claimBaseUrl, token), {
+    errorCorrectionLevel: 'Q',
+    width: 260,
+    margin: 2,
+    color: {
+      dark: '#000000',
+      light: '#ffffff',
+    },
+  });
