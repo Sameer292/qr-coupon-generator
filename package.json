@@ -9,7 +9,7 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b",
     "lint": "oxlint",
-    "test": "bun test/verify.js",
+    "test": "bun test/verify.js && bun test/cash.js",
     "check": "bun run lint && bun run typecheck && bun run test && bun run build",
     "preview": "vite preview"
   },

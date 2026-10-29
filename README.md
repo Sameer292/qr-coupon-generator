@@ -1,117 +1,149 @@
-# Fresh Masala Coupon Generator
+# Fresh Masala Coupon & Cash Claims Platform
 
-A fully client-side web app for producing print-ready promotional coupon batches, each with two QR codes and a cryptographically random verification token. It is built for the Fresh Masala festive campaign but the branding, URLs, numbering, and card layout are configurable.
+A complete solution for producing, distributing, validating, and redeeming promotional coupons. The repository consists of a high-performance **client-side batch generator** (supporting two campaign modes) and **two standalone WordPress plugins** for server-side verification and payout management.
 
-Nothing is uploaded. Coupon tokens are generated in the browser with the Web Crypto API, cards are rasterised with Canvas, PDFs are assembled with jsPDF, and the manifest is exported as CSV. The generated files are the only outputs.
+---
 
-## What it produces
+## Campaign Modes
 
-For a batch of N coupons:
+The platform supports two distinct promotional coupon campaigns:
 
-| Output | Details |
-| --- | --- |
-| Split PDFs | A4 portrait, 2 × 5 grid (10 cards per sheet), 90 mm × 50 mm cards, 5 mm gutters, crop marks, 300 DPI artwork. Split into files of 100, 250, or 500 coupons. |
-| `manifest.csv` | Header `coupon_code,qr_token,batch_id,generated_at`, one row per coupon, UTF-8 with Unix line endings. |
-| ZIP bundle | All PDFs plus `manifest.csv` in a folder named `coupons_<BATCH_ID>`. |
+### 1. Cash-Prize Claims (`/claim/?t=<token>`)
+* **Concept**: Fixed prize-tier batches where every coupon holds a guaranteed cash prize (e.g. 50 × Rs. 1,000, 200 × Rs. 500, 1,000 × Rs. 100).
+* **Artwork**: The actual prize amount is **never** printed on the physical card. The coupon features the prominent tagline `"GUARANTEED CASH PRIZE — SCAN TO REVEAL"`.
+* **Redemption Model**: First complete claim submission wins. Scanning the QR reveals the prize amount and prompts for claimant details (name, phone, optional 9-digit PAN).
+* **Payout**: Manual end-of-day payout by admins from verified submissions.
+* **WordPress Plugin**: `plugins/fm-cash-claims/` (menu: **Cash Claims**).
+* **Documentation**: See [docs/cash-prize-claims.md](docs/cash-prize-claims.md) for full architecture and runbook.
 
-PDF file names follow `coupons_<BATCH_ID>_<start>-<end>.pdf`, for example `coupons_BATCH-2026-01_0001-0250.pdf`.
+### 2. Weekly Festive Draw (`/verify/?t=<token>`)
+* **Concept**: Promotional customer lucky-draw campaign.
+* **Artwork**: Visual branding with contact info, Linktree QR code, monospace coupon code, and verification QR code.
+* **Verification**: Customers scan to verify and register their coupon for scheduled weekly draws.
+* **WordPress Plugin**: `plugins/fm-festive-draw/` (menu: **Festive Draw**).
 
-## How the app works
+---
 
-The UI is a three-step flow:
+## What the Generator Produces
 
-1. **Config** — upload a logo (PNG/SVG/JPEG), set the WhatsApp and landline numbers, Linktree URL, verification endpoint, coupon prefix, starting number, quantity, batch ID, and how many coupons go in each PDF. A live summary shows the sequence range, file count, and page count.
-2. **Live Preview** — renders a real coupon on a canvas, offers a one-page test PDF with 10 sample cards, and includes a drag-and-slider layout editor for the logo, phone block, QR codes, headings, coupon code box, footer, and activation banner.
-3. **Batch Export** — generates the tokens and PDFs with progress, cancellation, and an integrity audit, then exposes the CSV, individual PDFs, and the ZIP bundle.
+| Mode | Outputs | Details |
+|---|---|---|
+| **Cash Prize** | Split PDFs, `manifest.csv`, `batch-summary.json`, ZIP | Tier-grouped PDFs (15cm × 20cm portrait vouchers with corner crop marks), 6-column manifest, summary JSON. |
+| **Weekly Draw** | Split PDFs, `manifest.csv`, ZIP | Split PDFs (100/250/500 coupons per file), 4-column manifest. |
 
-### Coupon anatomy
+### Manifest Schemas
 
-Each 90 × 50 mm card contains:
+#### Cash-Prize Manifest (`manifest.csv`)
+Header: `coupon_code,qr_token,batch_id,prize_amount,currency,generated_at`
+```csv
+coupon_code,qr_token,batch_id,prize_amount,currency,generated_at
+FM-00001,8Fk3...32chars...,BATCH-2026-01,1000,NPR,2026-10-29T10:00:00.000Z
+FM-00002,3Nm9...32chars...,BATCH-2026-01,1000,NPR,2026-10-29T10:00:00.000Z
+```
 
-- Brand logo, WhatsApp number, optional office landline.
-- A static **Linktree QR** (`errorCorrectionLevel: 'M'`) with a "FOLLOW US" caption.
-- The printed coupon code, e.g. `FM-00001`, in large monospace type.
-- A **verification QR** (`errorCorrectionLevel: 'Q'`) encoding `<verificationBaseUrl>/?t=<32-char-token>` with a "SCAN HERE TO ACTIVATE" banner.
-- Batch ID and campaign footer text.
+#### Weekly Draw Manifest (`manifest.csv`)
+Header: `coupon_code,qr_token,batch_id,generated_at`
+```csv
+coupon_code,qr_token,batch_id,generated_at
+FM-00001,8Fk3...32chars...,BATCH-2026-01,2026-10-29T10:00:00.000Z
+```
 
-The card template is rendered once, then only the dynamic code and verification QR are stamped per coupon. This keeps large batches practical.
+---
 
-### Token generation and audit
+## Security Model & Manifest Rules
 
-- 24 random bytes from `crypto.getRandomValues` are Base64URL-encoded and truncated to 32 characters.
-- A `Set` rejects collisions while generating.
-- Before any download, `performSelfCheck` verifies the requested count, unique coupon codes, unique tokens, 32-character URL-safe tokens, and a uniform timestamp.
-- Downloads are disabled unless the audit passes.
+> [!IMPORTANT]
+> **Import Before Physical Distribution**:  
+> `manifest.csv` contains all secret 32-character tokens. It **must** be imported into the corresponding WordPress plugin (**Cash Claims &rarr; Import**) before coupons are printed and handed to customers.
 
-### Security model
+* **Cryptographic Tokens**: Generated using Web Crypto (`crypto.getRandomValues`), Base64URL-encoded (32 characters).
+* **Zero Server Transmission**: All token generation, canvas rasterization, PDF compilation, and ZIP bundling occur entirely in the user's browser.
+* **Pre-Export Integrity Audit**: Pre-download checks verify coupon counts, tier breakdowns, token uniqueness, and liability totals.
+* **One-Time Success Transient**: When a claimant submits a claim, sensitive reference data is stored in a single-use transient. Public status lookups only show coupon code and claim status, protecting customer privacy.
+* **Row-Level Concurrency Locking**: WordPress plugins employ MySQL `FOR UPDATE` transactions to prevent duplicate submissions or race conditions.
 
-`manifest.csv` contains the secret token for every coupon. It must be imported into the WordPress verification endpoint and then stored/deleted securely. Anyone with the file can forge activations. The app never sends it anywhere.
+---
 
-The app is client-side only, but note that the page loads Google Fonts (Cinzel, Inter, JetBrains Mono, Playfair Display) from `fonts.googleapis.com` / `fonts.gstatic.com`, so the header's "zero external server calls" claim is not strictly true. Self-host the fonts if the tool must run fully offline.
+## WordPress Plugins
 
-## Stack
+The repository contains two independent WordPress plugins located in the `plugins/` directory:
 
-- React 19 + TypeScript (strict)
-- Vite 8
-- Tailwind CSS 4
-- `qrcode`, `jspdf`, `jszip`, `canvas-confetti`, `lucide-react`
-- Oxlint
+### 1. FM Cash Claims (`plugins/fm-cash-claims/`)
+* **Menu**: `Cash Claims`
+* **Features**:
+  - Manifest CSV upload with server-side token preview masking.
+  - Public claim handler supporting `/claim/?t=<token>` and fallback query parameters.
+  - Claim management table with filters (pending payout, paid, rejected).
+  - Bulk "Mark selected as paid" action and individual claim inspection.
+  - Daily payout CSV export with UTF-8 BOM encoding.
+  - Scan and security audit logging.
+  - Complete uninstall cleanup (`fm_cash_*` database tables and transients).
 
-## Getting started
+### 2. FM Festive Draw (`plugins/fm-festive-draw/`)
+* **Menu**: `Festive Draw`
+* **Features**:
+  - Import manifest for lucky draw campaigns.
+  - Customer registration and weekly draw selection.
+  - Winner draw dashboard and export.
 
-Requires [Bun](https://bun.sh) (the lockfile is `bun.lock`).
+---
+
+## Tech Stack
+
+* **Frontend**: React 19, TypeScript (strict), Vite 8, Tailwind CSS 4
+* **Libraries**: `jspdf`, `jszip`, `qrcode`, `canvas-confetti`, `lucide-react`
+* **Linter & Tools**: Oxlint, Bun
+* **Backend**: WordPress 6.2+, PHP 8.1+, MySQL 8.0+
+
+---
+
+## Getting Started
+
+### Generator App
+Requires [Bun](https://bun.sh).
 
 ```bash
 bun install
 bun run dev
 ```
 
-Open the URL Vite prints (default `http://localhost:5173`).
+Open `http://localhost:5173` in your browser.
 
-### Scripts
+### Verification & Build Scripts
 
 | Command | Purpose |
-| --- | --- |
-| `bun run dev` | Start the Vite dev server. |
-| `bun run build` | Type-check and build to `dist/`. |
-| `bun run typecheck` | Type-check only. |
-| `bun run lint` | Run Oxlint. |
-| `bun run test` | Run the token, sequence, self-check, and CSV verification suite. |
-| `bun run check` | Lint, type-check, test, then build. |
-| `bun run preview` | Serve the production build locally. |
+|---|---|
+| `bun run dev` | Start local Vite development server. |
+| `bun run build` | Compile TypeScript and build production bundle into `dist/`. |
+| `bun run typecheck` | Run TypeScript compiler checks (`tsc -b`). |
+| `bun run lint` | Run Oxlint fast linter. |
+| `bun run test` | Run complete automated verification suite (Draw & Cash test suites). |
+| `bun run check` | Run lint, typecheck, test, and production build in sequence. |
 
-## Project layout
+---
+
+## Project Structure
 
 ```text
-src/
-  App.tsx                     screen state, validation, generation orchestration
-  components/
-    ConfigScreen.tsx          configuration form and batch summary
-    PreviewScreen.tsx         canvas preview, sample PDF, layout editor entry
-    VisualLayoutEditor.tsx    drag overlay and slider inspector
-    GenerationScreen.tsx      progress, audit results, downloads
-    CouponCard.tsx            live canvas coupon preview
-    Header.tsx                step navigation
-  types/coupon.ts             config, layout, coupon, and progress contracts
-  utils/
-    security.ts               secure token generation and pre-export audit
-    qr.ts                     Linktree and verification QR rendering
-    couponCanvas.ts           1063 × 591 card template and per-coupon stamping
-    pdf.ts                    A4 imposition, crop marks, PDF splitting
-    csv.ts                    manifest schema and download
-    zip.ts                    ZIP bundling
-    defaultLogo.ts            default Fresh Masala SVG logo
-test/verify.js                automated verification suite
+├── docs/
+│   └── cash-prize-claims.md        # In-depth cash campaign architecture & runbook
+├── plugins/
+│   ├── fm-cash-claims/             # Cash prize redemption & payout WordPress plugin
+│   │   ├── fm-cash-claims.php      # Plugin bootstrap & lifecycle
+│   │   ├── includes/               # DB, claim routing, admin, importer, export, list table
+│   │   ├── templates/              # Public claim form, success, status, error views
+│   │   └── readme.txt              # WordPress plugin directory readme
+│   └── fm-festive-draw/            # Existing weekly draw verification plugin
+├── src/
+│   ├── App.tsx                     # Mode switching, validation, generation orchestration
+│   ├── components/                 # UI screens for Draw and Cash modes
+│   │   ├── CashConfigScreen.tsx    # Cash tier config, liability calculation, batch parameters
+│   │   ├── CashPreviewScreen.tsx   # Canvas card preview & sample test sheet
+│   │   ├── CashGenerationScreen.tsx# Progress, audit validation, downloads
+│   │   └── ...
+│   ├── types/coupon.ts             # Contracts for draw and cash campaigns
+│   └── utils/                      # Canvas stamping, QR, PDF imposition, CSV, ZIP bundling
+└── test/
+    ├── verify.js                   # Draw verification suite
+    └── cash.js                     # Cash campaign verification suite
 ```
-
-## Defaults
-
-The app opens with a sample batch: 5,000 coupons starting at `FM-00001`, batch `BATCH-2026-01`, 250 coupons per PDF, a Fresh Masala demo logo, and placeholder contact/URL values. Replace them before producing a real batch.
-
-## Known limitations
-
-- **Memory and time scale with batch size.** Every coupon is rendered to a 1063 × 591 JPEG and every PDF is kept as an in-memory blob. Very large runs (up to 20,000 coupons) can take a long time and may exhaust browser memory. Prefer several smaller batches.
-- **Verification URLs are built by string concatenation.** A base URL that already contains other query parameters may produce a malformed link. Use a clean endpoint such as `https://example.com/verify/`.
-- **Layout is not persisted.** Refreshing the page resets the configuration and layout to defaults.
-- **The layout editor renders an overlay and an inspector.** Selecting an element in the overlay is not reflected in the inspector's selection until it is clicked there.
-- **No automated UI or PDF snapshot tests.** The verification suite covers tokens, sequencing, audit logic, and CSV output.

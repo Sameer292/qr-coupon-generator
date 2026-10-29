@@ -4,7 +4,7 @@ import type { CouponItem } from '../types/coupon';
  * Escapes a CSV cell value according to RFC 4180:
  * Quotes the string if it contains a comma, double-quote, or newline.
  */
-function escapeCsvCell(value: string): string {
+export function escapeCsvCell(value: string): string {
   if (value.includes(',') || value.includes('"') || value.includes('\n') || value.includes('\r')) {
     return `"${value.replace(/"/g, '""')}"`;
   }

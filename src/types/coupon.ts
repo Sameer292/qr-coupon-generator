@@ -198,3 +198,96 @@ export interface GeneratedPdfFileInfo {
   url: string;
   pageCount: number;
 }
+
+export type CampaignMode = 'draw' | 'cash';
+
+export interface PrizeTier {
+  id: string;
+  amount: number;
+  quantity: number;
+}
+
+export interface CashCouponConfig {
+  logoDataUrl: string;
+  phoneNumber: string;
+  landlineNumber?: string;
+  linktreeUrl: string;
+  claimBaseUrl: string;
+  couponPrefix: string;
+  startingNumber: number;
+  batchId: string;
+  couponsPerPdf: number;
+  prizeTiers: PrizeTier[];
+  includeLinktreeQr: boolean;
+}
+
+export interface CashCouponItem {
+  coupon_code: string;
+  qr_token: string;
+  batch_id: string;
+  prize_amount: number;
+  currency: 'NPR';
+  generated_at: string;
+}
+
+export interface CashTierSummary {
+  amount: number;
+  quantity: number;
+  codeStart: string;
+  codeEnd: string;
+  totalValue: number;
+}
+
+export interface CashBatchSummary {
+  batch_id: string;
+  currency: 'NPR';
+  total_coupons: number;
+  total_value: number;
+  generated_at: string;
+  tiers: CashTierSummary[];
+}
+
+export interface CashValidationErrors {
+  logoDataUrl?: string;
+  phoneNumber?: string;
+  landlineNumber?: string;
+  linktreeUrl?: string;
+  claimBaseUrl?: string;
+  couponPrefix?: string;
+  startingNumber?: string;
+  batchId?: string;
+  couponsPerPdf?: string;
+  prizeTiers?: string;
+  tierErrors?: Record<string, { amount?: string; quantity?: string }>;
+}
+
+export interface CashSelfCheckResult {
+  passed: boolean;
+  totalRequested: number;
+  totalGenerated: number;
+  uniqueCodesCount: number;
+  uniqueTokensCount: number;
+  invalidTokenLengthCount: number;
+  codeDuplicates: number;
+  tokenDuplicates: number;
+  timestampUniform: boolean;
+  tierCountsMatch: boolean;
+  totalValue: number;
+  expectedTotalValue: number;
+  invalidPrizeAmountCount: number;
+  groupingValid: boolean;
+}
+
+export interface CashGeneratedBatchData {
+  config: CashCouponConfig;
+  coupons: CashCouponItem[];
+  generatedAt: string;
+  linktreeQrDataUrl: string;
+  selfCheck: CashSelfCheckResult;
+  summary: CashBatchSummary;
+}
+
+export interface CashPdfFileInfo extends GeneratedPdfFileInfo {
+  tierAmount: number;
+  tierFolder: string;
+}
