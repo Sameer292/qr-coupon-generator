@@ -216,7 +216,7 @@ export interface CashCouponConfig {
   couponPrefix: string;
   startingNumber: number;
   batchId: string;
-  couponsPerPdf: 100 | 250 | 500;
+  couponsPerPdf: number;
   prizeTiers: PrizeTier[];
   includeLinktreeQr: boolean;
 }

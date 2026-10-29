@@ -13,7 +13,7 @@ The cash prize system is structured into two completely decoupled components:
 │                 Client-Side Generator (Browser)              │
 │  - Configures fixed prize tiers (amount + quantity)         │
 │  - Generates 32-char crypto random tokens via Web Crypto    │
-│  - Imposes 90x50 mm cards onto A4 sheets with crop marks   │
+│  - Imposes 15cm × 20cm (150×200 mm) portrait vouchers with crop marks│
 │  - Groups output PDFs by prize tier into folder structures │
 │  - Produces manifest.csv and batch-summary.json             │
 └──────────────────────────────┬──────────────────────────────┘

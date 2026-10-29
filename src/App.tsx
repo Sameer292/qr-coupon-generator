@@ -58,8 +58,8 @@ const DEFAULT_CASH_CONFIG: CashCouponConfig = {
   claimBaseUrl: 'https://freshmasala.com.np/claim/',
   couponPrefix: 'FM-',
   startingNumber: 1,
-  batchId: 'CASH-2026-01',
-  couponsPerPdf: 250,
+  batchId: `CASH-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}`,
+  couponsPerPdf: 50,
   prizeTiers: [
     { id: 'tier-100', amount: 100, quantity: 100 },
     { id: 'tier-500', amount: 500, quantity: 20 },

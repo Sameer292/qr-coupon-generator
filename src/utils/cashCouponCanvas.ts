@@ -1,7 +1,5 @@
 import type { CashCouponConfig } from '../types/coupon';
 import {
-  CANVAS_HEIGHT,
-  CANVAS_WIDTH,
   LANDLINE_ICON_DATA_URL,
   WHATSAPP_ICON_DATA_URL,
   drawRoundedRect,
@@ -13,9 +11,23 @@ export interface CashCouponRenderData {
   claimQrDataUrl: string;
 }
 
-const QR_X = 890;
-const QR_Y = 96;
-const QR_SIZE = 250;
+// 15cm wide × 20cm tall at 300 DPI
+export const CASH_CARD_WIDTH_MM = 150;
+export const CASH_CARD_HEIGHT_MM = 200;
+export const CASH_CANVAS_WIDTH = 1772;
+export const CASH_CANVAS_HEIGHT = 2362;
+
+// Center X for all symmetrical elements
+const CX = CASH_CANVAS_WIDTH / 2; // 886
+
+// QR Code placement on the 15cm x 20cm canvas
+const QR_BOX_X = CX - 630; // 256
+const QR_BOX_Y = 890;
+const QR_BOX_W = 1260;
+const QR_BOX_H = 690;
+const QR_X = CX;
+const QR_Y = 990;
+const QR_SIZE = 450;
 
 const drawCenteredText = (
   ctx: CanvasRenderingContext2D,
@@ -28,8 +40,10 @@ const drawCenteredText = (
 };
 
 /**
- * Static cash-prize coupon artwork. The amount is intentionally not printed;
- * it is revealed by the WordPress claim page after the token is validated.
+ * Static cash-prize coupon artwork for a 15cm x 20cm (portrait) voucher.
+ * The prize amount is intentionally NOT printed on the card; it is revealed
+ * on the website after the QR code is scanned.
+ * The batch number is NOT printed anywhere on this coupon.
  */
 export const createCashCouponTemplate = async (
   config: CashCouponConfig,
@@ -39,13 +53,13 @@ export const createCashCouponTemplate = async (
     try {
       await document.fonts.ready;
     } catch {
-      // Canvas rendering can continue with fallback fonts.
+      // Continue with fallback fonts if needed
     }
   }
 
   const canvas = document.createElement('canvas');
-  canvas.width = CANVAS_WIDTH;
-  canvas.height = CANVAS_HEIGHT;
+  canvas.width = CASH_CANVAS_WIDTH;
+  canvas.height = CASH_CANVAS_HEIGHT;
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   if (!ctx) throw new Error('Could not get canvas context');
 
@@ -64,257 +78,294 @@ export const createCashCouponTemplate = async (
   const landlineImg = loaded[2];
   const linktreeImg = config.includeLinktreeQr ? loaded[3] : undefined;
 
-  const bgGrad = ctx.createLinearGradient(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  // 1. Festive Background Gradient
+  const bgGrad = ctx.createLinearGradient(0, 0, CASH_CANVAS_WIDTH, CASH_CANVAS_HEIGHT);
   bgGrad.addColorStop(0, '#FAF6EE');
-  bgGrad.addColorStop(0.35, '#FDFBF7');
-  bgGrad.addColorStop(0.7, '#F6EFE3');
-  bgGrad.addColorStop(1, '#ECE2D0');
+  bgGrad.addColorStop(0.3, '#FDFBF7');
+  bgGrad.addColorStop(0.7, '#F7EFE1');
+  bgGrad.addColorStop(1, '#ECE0CA');
   ctx.fillStyle = bgGrad;
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  ctx.fillRect(0, 0, CASH_CANVAS_WIDTH, CASH_CANVAS_HEIGHT);
 
-  drawRoundedRect(ctx, 14, 14, CANVAS_WIDTH - 28, CANVAS_HEIGHT - 28, 6, undefined, '#D97706', 2);
-  drawRoundedRect(ctx, 22, 22, CANVAS_WIDTH - 44, CANVAS_HEIGHT - 44, 4, undefined, '#881337', 1.5);
+  // 2. Ornate Festive Borders
+  // Outer gold border
+  drawRoundedRect(ctx, 36, 36, CASH_CANVAS_WIDTH - 72, CASH_CANVAS_HEIGHT - 72, 16, undefined, '#D97706', 4);
+  // Inner royal burgundy border
+  drawRoundedRect(ctx, 52, 52, CASH_CANVAS_WIDTH - 104, CASH_CANVAS_HEIGHT - 104, 10, undefined, '#881337', 2.5);
+  // Delicate accent border
+  drawRoundedRect(ctx, 64, 64, CASH_CANVAS_WIDTH - 128, CASH_CANVAS_HEIGHT - 128, 6, undefined, 'rgba(217, 119, 6, 0.35)', 1.5);
 
+  // Corner decorative brackets
   const drawCornerBracket = (x: number, y: number, angle: number): void => {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(angle);
     ctx.strokeStyle = '#B45309';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 4;
     ctx.beginPath();
-    ctx.moveTo(18, 0);
+    ctx.moveTo(36, 0);
     ctx.lineTo(0, 0);
-    ctx.lineTo(0, 18);
+    ctx.lineTo(0, 36);
+    ctx.stroke();
+
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#D97706';
+    ctx.beginPath();
+    ctx.moveTo(28, 8);
+    ctx.lineTo(8, 8);
+    ctx.lineTo(8, 28);
     ctx.stroke();
     ctx.restore();
   };
-  drawCornerBracket(22, 22, 0);
-  drawCornerBracket(CANVAS_WIDTH - 22, 22, Math.PI / 2);
-  drawCornerBracket(CANVAS_WIDTH - 22, CANVAS_HEIGHT - 22, Math.PI);
-  drawCornerBracket(22, CANVAS_HEIGHT - 22, -Math.PI / 2);
 
-  ctx.save();
-  ctx.setLineDash([6, 6]);
-  ctx.strokeStyle = 'rgba(180, 83, 9, 0.35)';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(325, 28);
-  ctx.lineTo(325, CANVAS_HEIGHT - 28);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(720, 28);
-  ctx.lineTo(720, CANVAS_HEIGHT - 28);
-  ctx.stroke();
-  ctx.restore();
+  drawCornerBracket(52, 52, 0);
+  drawCornerBracket(CASH_CANVAS_WIDTH - 52, 52, Math.PI / 2);
+  drawCornerBracket(CASH_CANVAS_WIDTH - 52, CASH_CANVAS_HEIGHT - 52, Math.PI);
+  drawCornerBracket(52, CASH_CANVAS_HEIGHT - 52, -Math.PI / 2);
 
-  // Left zone: brand, contact, optional follow QR, or a cash seal.
-  const leftX = 170;
-  const maxLogoW = 300;
-  const maxLogoH = 118;
-  const logoRatio = Math.min(maxLogoW / (logoImg.width || maxLogoW), maxLogoH / (logoImg.height || maxLogoH), 1);
+  // 3. Top Brand Section
+  const maxLogoW = 580;
+  const maxLogoH = 180;
+  const logoRatio = Math.min(
+    maxLogoW / (logoImg.width || maxLogoW),
+    maxLogoH / (logoImg.height || maxLogoH),
+    1
+  );
   const logoW = (logoImg.width || maxLogoW) * logoRatio;
   const logoH = (logoImg.height || maxLogoH) * logoRatio;
-  ctx.drawImage(logoImg, leftX - logoW / 2, 34, logoW, logoH);
+  ctx.drawImage(logoImg, CX - logoW / 2, 95, logoW, logoH);
 
+  // Contact Info Line
   const hasLandline = Boolean(config.landlineNumber && config.landlineNumber.trim());
   const phoneText = config.phoneNumber || '+977-9800000000';
-  const phoneY = 188;
-  const phoneFont = hasLandline ? 24 : 27;
-  const waIconSize = Math.round(phoneFont * 1.1);
+  const phoneFont = 30;
+  const waIconSize = Math.round(phoneFont * 1.15);
   ctx.font = `bold ${phoneFont}px Inter, system-ui, sans-serif`;
-  const phoneWidth = Math.min(ctx.measureText(phoneText).width, 250);
-  const phoneGroupW = waIconSize + 8 + phoneWidth;
-  const phoneStartX = leftX - phoneGroupW / 2;
-  ctx.drawImage(waImg, phoneStartX, phoneY - waIconSize * 0.85, waIconSize, waIconSize);
-  ctx.fillStyle = '#881337';
-  ctx.textAlign = 'left';
-  drawCenteredText(ctx, phoneText, phoneStartX + waIconSize + 8, phoneY, 250);
+  const phoneW = ctx.measureText(phoneText).width;
+
+  let totalContactW = waIconSize + 10 + phoneW;
+  let landlineText = '';
+  let landlineW = 0;
+  const landlineFont = 28;
+  const landlineIconSize = Math.round(landlineFont * 1.1);
 
   if (hasLandline) {
-    const landlineText = config.landlineNumber?.trim() || '';
-    const landlineFont = 22;
-    const landlineIconSize = Math.round(landlineFont * 1.05);
+    landlineText = config.landlineNumber?.trim() || '';
     ctx.font = `bold ${landlineFont}px Inter, system-ui, sans-serif`;
-    const landlineWidth = Math.min(ctx.measureText(landlineText).width, 240);
-    const landlineGroupW = landlineIconSize + 8 + landlineWidth;
-    const landlineStartX = leftX - landlineGroupW / 2;
-    const landlineY = phoneY + phoneFont + 10;
-    ctx.drawImage(
-      landlineImg,
-      landlineStartX,
-      landlineY - landlineIconSize * 0.85,
-      landlineIconSize,
-      landlineIconSize
-    );
-    ctx.fillStyle = '#78350F';
-    ctx.textAlign = 'left';
-    drawCenteredText(ctx, landlineText, landlineStartX + landlineIconSize + 8, landlineY, 240);
+    landlineW = ctx.measureText(landlineText).width;
+    totalContactW += 40 + landlineIconSize + 10 + landlineW;
   }
 
-  if (config.includeLinktreeQr && linktreeImg) {
-    const qrSize = 178;
-    const qrX = leftX - qrSize / 2;
-    const qrY = 266;
-    drawRoundedRect(ctx, qrX, qrY, qrSize, qrSize, 6, '#FFFFFF', '#D97706', 2.5);
-    const pad = 8;
-    ctx.drawImage(linktreeImg, qrX + pad, qrY + pad, qrSize - pad * 2, qrSize - pad * 2);
-    ctx.fillStyle = '#78350F';
-    ctx.font = '800 17px Inter, system-ui, sans-serif';
-    ctx.letterSpacing = '3px';
-    ctx.textAlign = 'center';
-    ctx.fillText('FOLLOW US', leftX, qrY + qrSize + 27);
-    ctx.letterSpacing = '0px';
-  } else {
-    const sealY = 380;
-    const sealRadius = 92;
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(leftX, sealY, sealRadius, 0, Math.PI * 2);
-    ctx.fillStyle = '#881337';
-    ctx.fill();
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = '#D97706';
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(leftX, sealY, sealRadius - 10, 0, Math.PI * 2);
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = '#FDE68A';
-    ctx.stroke();
-    ctx.fillStyle = '#FDE68A';
-    ctx.font = '900 13px Inter, system-ui, sans-serif';
-    ctx.letterSpacing = '2px';
-    ctx.textAlign = 'center';
-    ctx.fillText('GUARANTEED', leftX, sealY - 34);
-    ctx.letterSpacing = '0px';
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = '900 31px Cinzel, Georgia, serif';
-    ctx.fillText('CASH', leftX, sealY + 2);
-    ctx.fillText('PRIZE', leftX, sealY + 35);
-    ctx.fillStyle = '#FDE68A';
-    ctx.font = '800 12px Inter, system-ui, sans-serif';
-    ctx.letterSpacing = '1.5px';
-    ctx.fillText('SCAN TO REVEAL', leftX, sealY + 61);
-    ctx.letterSpacing = '0px';
-    ctx.restore();
-  }
+  let contactStartX = CX - totalContactW / 2;
+  const contactY = 320;
 
-  // Centre zone: headline, hidden-prize instruction, code box, footer.
-  const centerX = 522;
+  // Draw WhatsApp
+  ctx.drawImage(waImg, contactStartX, contactY - waIconSize * 0.85, waIconSize, waIconSize);
+  contactStartX += waIconSize + 10;
   ctx.fillStyle = '#881337';
-  ctx.font = '900 48px Cinzel, "Playfair Display", Georgia, serif';
-  ctx.letterSpacing = '2px';
-  ctx.textAlign = 'center';
-  drawCenteredText(ctx, 'CASH PRIZE', centerX, 100, 380);
-  ctx.letterSpacing = '0px';
+  ctx.font = `bold ${phoneFont}px Inter, system-ui, sans-serif`;
+  ctx.textAlign = 'left';
+  ctx.fillText(phoneText, contactStartX, contactY);
+  contactStartX += phoneW;
 
-  ctx.fillStyle = '#B45309';
-  ctx.font = '900 23px Inter, system-ui, sans-serif';
-  ctx.letterSpacing = '8px';
-  ctx.fillText('COUPON', centerX, 141);
-  ctx.letterSpacing = '0px';
+  // Draw Landline if present
+  if (hasLandline) {
+    contactStartX += 40;
+    ctx.drawImage(landlineImg, contactStartX, contactY - landlineIconSize * 0.85, landlineIconSize, landlineIconSize);
+    contactStartX += landlineIconSize + 10;
+    ctx.fillStyle = '#78350F';
+    ctx.font = `bold ${landlineFont}px Inter, system-ui, sans-serif`;
+    ctx.fillText(landlineText, contactStartX, contactY);
+  }
 
-  ctx.fillStyle = '#D97706';
-  ctx.fillRect(centerX - 175, 156, 350, 4);
+  // Divider below contacts
   ctx.save();
-  ctx.translate(centerX, 158);
+  ctx.strokeStyle = 'rgba(217, 119, 6, 0.45)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(CX - 400, 360);
+  ctx.lineTo(CX + 400, 360);
+  ctx.stroke();
+
+  // Central ornamental diamond
+  ctx.fillStyle = '#D97706';
+  ctx.translate(CX, 360);
   ctx.rotate(Math.PI / 4);
-  ctx.fillStyle = '#B45309';
   ctx.fillRect(-7, -7, 14, 14);
   ctx.restore();
 
-  ctx.fillStyle = '#1E293B';
-  ctx.font = '800 15px Inter, system-ui, sans-serif';
-  ctx.letterSpacing = '0.6px';
-  ctx.fillText('GUARANTEED CASH PRIZE — SCAN TO REVEAL', centerX, 190, 370);
+  // 4. Grand Headline
+  // Top decorative badge
+  const badgeW = 480;
+  const badgeH = 44;
+  drawRoundedRect(ctx, CX - badgeW / 2, 400, badgeW, badgeH, 22, '#881337');
+  ctx.fillStyle = '#FDE68A';
+  ctx.font = '800 20px Inter, system-ui, sans-serif';
+  ctx.letterSpacing = '3px';
+  ctx.textAlign = 'center';
+  ctx.fillText('★ FESTIVE CASH REWARD ★', CX, 430);
   ctx.letterSpacing = '0px';
 
-  const codeBoxW = 360;
-  const codeBoxH = 135;
-  const codeBoxX = centerX - codeBoxW / 2;
-  const codeBoxY = 210;
-  drawRoundedRect(ctx, codeBoxX, codeBoxY, codeBoxW, codeBoxH, 10, '#FFFFFF', '#881337', 2.5);
-  drawRoundedRect(ctx, codeBoxX + 4, codeBoxY + 4, codeBoxW - 8, codeBoxH - 8, 6, undefined, '#D97706', 1);
+  // Main Title
+  ctx.fillStyle = '#881337';
+  ctx.font = '900 86px Cinzel, "Playfair Display", Georgia, serif';
+  ctx.letterSpacing = '4px';
+  ctx.textAlign = 'center';
+  drawCenteredText(ctx, 'CASH PRIZE', CX, 535, 1200);
+  ctx.letterSpacing = '0px';
+
+  // Subtitle
+  ctx.fillStyle = '#B45309';
+  ctx.font = '900 42px Inter, system-ui, sans-serif';
+  ctx.letterSpacing = '14px';
+  ctx.fillText('VOUCHER', CX, 595);
+  ctx.letterSpacing = '0px';
+
+  // Horizontal ornamental divider
+  ctx.save();
+  ctx.strokeStyle = '#D97706';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(CX - 500, 625);
+  ctx.lineTo(CX + 500, 625);
+  ctx.stroke();
 
   ctx.fillStyle = '#B45309';
-  ctx.font = '800 17px Inter, system-ui, sans-serif';
-  ctx.letterSpacing = '3.5px';
-  ctx.textAlign = 'center';
-  ctx.fillText('COUPON CODE', centerX, codeBoxY + 34);
-  ctx.letterSpacing = '0px';
+  ctx.translate(CX, 625);
+  ctx.rotate(Math.PI / 4);
+  ctx.fillRect(-8, -8, 16, 16);
+  ctx.restore();
 
-  ctx.fillStyle = '#991B1B';
-  ctx.font = 'italic 700 21px Inter, system-ui, sans-serif';
-  ctx.fillText('★ First claim wins ★', centerX, 390);
+  // 5. Core Guaranteed Cash Prize Tagline Banner (EXACT STRING REQUIRED)
+  const ribbonW = 1460;
+  const ribbonH = 104;
+  const ribbonY = 665;
+  drawRoundedRect(ctx, CX - ribbonW / 2, ribbonY, ribbonW, ribbonH, 16, '#B45309', '#78350F', 3);
+  drawRoundedRect(ctx, CX - ribbonW / 2 + 4, ribbonY + 4, ribbonW - 8, ribbonH - 8, 12, '#D97706');
 
-  ctx.fillStyle = '#78350F';
-  ctx.font = '800 17px Inter, system-ui, sans-serif';
-  ctx.fillText('Payment at end of day', centerX, 423);
-
-  ctx.font = '700 15px Inter, system-ui, sans-serif';
-  ctx.letterSpacing = '1.2px';
-  drawCenteredText(ctx, `BATCH: ${config.batchId}`, centerX, 458, 360);
-  ctx.letterSpacing = '0px';
-
-  ctx.fillStyle = '#64748B';
-  ctx.font = '600 13px Inter, system-ui, sans-serif';
-  ctx.fillText('One claim per coupon • Keep this coupon', centerX, 492);
-  ctx.font = '600 12px Inter, system-ui, sans-serif';
-  ctx.fillText('Fresh Masala Cash Reward 2026', centerX, 520);
-
-  // Right zone: claim QR and first-claim instruction.
-  const badgeWidth = 230;
-  const badgeHeight = 38;
-  drawRoundedRect(
-    ctx,
-    QR_X - badgeWidth / 2,
-    58,
-    badgeWidth,
-    badgeHeight,
-    6,
-    '#881337'
-  );
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = '900 15px Inter, system-ui, sans-serif';
+  ctx.font = '900 38px Inter, system-ui, sans-serif';
+  ctx.letterSpacing = '1px';
+  ctx.textAlign = 'center';
+  ctx.fillText('GUARANTEED CASH PRIZE — SCAN TO REVEAL', CX, ribbonY + 66, ribbonW - 40);
+  ctx.letterSpacing = '0px';
+
+  ctx.fillStyle = '#475569';
+  ctx.font = 'italic 600 24px Inter, system-ui, sans-serif';
+  ctx.fillText('Cash amount is revealed instantly on your phone upon scanning', CX, ribbonY + 145);
+
+  // 6. Hero Center: QR Code Container Card
+  drawRoundedRect(ctx, QR_BOX_X, QR_BOX_Y, QR_BOX_W, QR_BOX_H, 24, '#FFFFFF', '#881337', 3);
+  drawRoundedRect(ctx, QR_BOX_X + 6, QR_BOX_Y + 6, QR_BOX_W - 12, QR_BOX_H - 12, 18, undefined, '#D97706', 1.5);
+
+  // QR Header ribbon
+  const qrHeaderH = 68;
+  drawRoundedRect(ctx, QR_BOX_X, QR_BOX_Y, QR_BOX_W, qrHeaderH, { tl: 24, tr: 24, br: 0, bl: 0 }, '#881337');
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '900 26px Inter, system-ui, sans-serif';
   ctx.letterSpacing = '2px';
   ctx.textAlign = 'center';
-  ctx.fillText('SCAN TO CLAIM', QR_X, 83);
+  ctx.fillText('SCAN TO REVEAL & CLAIM YOUR CASH PRIZE', CX, QR_BOX_Y + 44);
   ctx.letterSpacing = '0px';
 
-  drawRoundedRect(
-    ctx,
-    QR_X - QR_SIZE / 2,
-    QR_Y,
-    QR_SIZE,
-    QR_SIZE,
-    { tl: 0, tr: 0, br: 8, bl: 8 },
-    '#FFFFFF',
-    '#881337',
-    2.5
-  );
+  // QR placeholder outline in template
+  drawRoundedRect(ctx, QR_X - QR_SIZE / 2, QR_Y, QR_SIZE, QR_SIZE, 12, '#FFFFFF', 'rgba(180, 83, 9, 0.4)', 2);
 
-  const bannerW = 285;
-  const bannerH = 48;
-  drawRoundedRect(ctx, QR_X - bannerW / 2, 370, bannerW, bannerH, 8, '#D97706');
+  // Call-To-Action Button below QR
+  const ctaW = 860;
+  const ctaH = 64;
+  const ctaY = 1485;
+  drawRoundedRect(ctx, CX - ctaW / 2, ctaY, ctaW, ctaH, 32, '#D97706', '#B45309', 2);
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = '900 14px Inter, system-ui, sans-serif';
+  ctx.font = '900 25px Inter, system-ui, sans-serif';
   ctx.letterSpacing = '1px';
-  ctx.fillText('REVEAL CASH PRIZE', QR_X, 400);
+  ctx.fillText('POINT CAMERA AT QR CODE TO CLAIM', CX, ctaY + 42);
+  ctx.letterSpacing = '0px';
+
+  ctx.fillStyle = '#64748B';
+  ctx.font = '600 21px Inter, system-ui, sans-serif';
+  ctx.fillText('Works with any smartphone camera • No app required', CX, ctaY + 88);
+
+  // 7. Human-Readable Coupon Code Box
+  const codeBoxW = 1260;
+  const codeBoxH = 205;
+  const codeBoxY = 1625;
+  drawRoundedRect(ctx, CX - codeBoxW / 2, codeBoxY, codeBoxW, codeBoxH, 20, '#FFFFFF', '#881337', 3);
+  drawRoundedRect(ctx, CX - codeBoxW / 2 + 5, codeBoxY + 5, codeBoxW - 10, codeBoxH - 10, 15, undefined, '#D97706', 1.5);
+
+  ctx.fillStyle = '#B45309';
+  ctx.font = '800 23px Inter, system-ui, sans-serif';
+  ctx.letterSpacing = '6px';
+  ctx.textAlign = 'center';
+  ctx.fillText('COUPON CODE', CX, codeBoxY + 42);
   ctx.letterSpacing = '0px';
 
   ctx.fillStyle = '#78350F';
-  ctx.font = '800 17px Inter, system-ui, sans-serif';
-  ctx.fillText('First claim wins', QR_X, 449);
-  ctx.fillStyle = '#64748B';
-  ctx.font = '600 14px Inter, system-ui, sans-serif';
-  ctx.fillText('Payment at end of day', QR_X, 480);
-  ctx.font = '600 12px Inter, system-ui, sans-serif';
-  ctx.fillText('No app needed', QR_X, 508);
+  ctx.font = '600 20px Inter, system-ui, sans-serif';
+  ctx.fillText('(Keep this voucher and code for payout confirmation)', CX, codeBoxY + 178);
 
+  // 8. Rules & Payout Information Block (NO BATCH NUMBER)
+  ctx.fillStyle = '#991B1B';
+  ctx.font = 'italic 900 30px Inter, system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('★ First Complete Claim Submission Wins ★', CX, 1885);
+
+  ctx.fillStyle = '#334155';
+  ctx.font = '700 23px Inter, system-ui, sans-serif';
+  ctx.fillText('• Scan the QR code with your smartphone and submit claimant details', CX, 1935);
+  ctx.fillText('• Payouts processed at end of day via digital wallet, bank, or cash', CX, 1975);
+  ctx.fillText('• Each QR token is single-use and protected by encryption', CX, 2015);
+
+  ctx.fillStyle = '#64748B';
+  ctx.font = '600 20px Inter, system-ui, sans-serif';
+  ctx.fillText('Hold onto this physical voucher until payout is completed • One claim per coupon', CX, 2065);
+
+  // Optional Linktree Follow QR at the bottom or Festive Trust Seal
+  if (config.includeLinktreeQr && linktreeImg) {
+    const followQrSize = 130;
+    const followX = CX - 350;
+    const followY = 2110;
+    drawRoundedRect(ctx, followX, followY, followQrSize, followQrSize, 8, '#FFFFFF', '#D97706', 2);
+    ctx.drawImage(linktreeImg, followX + 6, followY + 6, followQrSize - 12, followQrSize - 12);
+
+    ctx.fillStyle = '#78350F';
+    ctx.font = '800 18px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('FOLLOW US FOR ANNOUNCEMENTS', followX + followQrSize + 20, followY + 45);
+    ctx.fillStyle = '#64748B';
+    ctx.font = '600 16px Inter, system-ui, sans-serif';
+    ctx.fillText('Scan to view social links & official updates', followX + followQrSize + 20, followY + 80);
+  } else {
+    // Elegant Trust Seal in center
+    ctx.save();
+    ctx.strokeStyle = 'rgba(217, 119, 6, 0.4)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(CX - 450, 2150);
+    ctx.lineTo(CX + 450, 2150);
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.fillStyle = '#78350F';
+    ctx.font = '800 20px Inter, system-ui, sans-serif';
+    ctx.letterSpacing = '2px';
+    ctx.textAlign = 'center';
+    ctx.fillText('AUTHENTIC FRESH MASALA PROMOTIONAL CAMPAIGN', CX, 2185);
+    ctx.letterSpacing = '0px';
+  }
+
+  // 9. Footer Note (NO BATCH NUMBER)
+  ctx.fillStyle = '#94A3B8';
+  ctx.font = '600 18px Inter, system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Fresh Masala Festive Campaign • Terms & Conditions apply • Valid during campaign period', CX, 2260);
+
+  // Subtle cut guide around the edges
   ctx.save();
-  ctx.setLineDash([8, 6]);
-  ctx.strokeStyle = '#94A3B8';
+  ctx.setLineDash([10, 8]);
+  ctx.strokeStyle = 'rgba(148, 163, 184, 0.6)';
   ctx.lineWidth = 1.5;
-  ctx.strokeRect(2, 2, CANVAS_WIDTH - 4, CANVAS_HEIGHT - 4);
+  ctx.strokeRect(12, 12, CASH_CANVAS_WIDTH - 24, CASH_CANVAS_HEIGHT - 24);
   ctx.restore();
 
   return canvas;
@@ -325,14 +376,15 @@ export const renderCashCouponToCanvas = async (
   coupon: CashCouponRenderData
 ): Promise<HTMLCanvasElement> => {
   const canvas = document.createElement('canvas');
-  canvas.width = CANVAS_WIDTH;
-  canvas.height = CANVAS_HEIGHT;
+  canvas.width = CASH_CANVAS_WIDTH;
+  canvas.height = CASH_CANVAS_HEIGHT;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Could not get canvas context');
 
   ctx.drawImage(templateCanvas, 0, 0);
 
-  const qrPad = 12;
+  // Stamp QR Code
+  const qrPad = 16;
   const qrImg = await loadImage(coupon.claimQrDataUrl);
   ctx.drawImage(
     qrImg,
@@ -342,20 +394,21 @@ export const renderCashCouponToCanvas = async (
     QR_SIZE - qrPad * 2
   );
 
+  // Stamp Coupon Code in the code box
   ctx.fillStyle = '#4C0519';
-  const maxCodeWidth = 330;
-  const baseCodeFontSize = 54;
-  ctx.font = `900 ${baseCodeFontSize}px "JetBrains Mono", "Courier New", monospace`;
+  const maxCodeWidth = 1000;
+  const baseCodeFontSize = 84;
+  ctx.font = `900 ${baseCodeFontSize}px "JetBrains Mono", monospace`;
   ctx.textAlign = 'center';
-  ctx.letterSpacing = '4px';
+  ctx.letterSpacing = '5px';
   const measuredCodeWidth = ctx.measureText(coupon.couponCode).width;
   const codeFontSize =
     measuredCodeWidth > maxCodeWidth
-      ? Math.max(18, Math.floor((baseCodeFontSize * maxCodeWidth) / measuredCodeWidth))
+      ? Math.max(30, Math.floor((baseCodeFontSize * maxCodeWidth) / measuredCodeWidth))
       : baseCodeFontSize;
-  ctx.font = `900 ${codeFontSize}px "JetBrains Mono", "Courier New", monospace`;
-  ctx.letterSpacing = codeFontSize < 30 ? '1px' : '4px';
-  ctx.fillText(coupon.couponCode, 522, 318, maxCodeWidth);
+  ctx.font = `900 ${codeFontSize}px "JetBrains Mono", monospace`;
+  ctx.letterSpacing = codeFontSize < 40 ? '2px' : '5px';
+  ctx.fillText(coupon.couponCode, CX, 1745, maxCodeWidth);
   ctx.letterSpacing = '0px';
 
   return canvas;

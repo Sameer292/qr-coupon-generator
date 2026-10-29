@@ -45,26 +45,25 @@ export const validateCashConfig = (
     errs.claimBaseUrl = 'Must be a valid URL starting with http:// or https://';
   }
 
-  const couponPrefix = config.couponPrefix.trim();
-  if (!couponPrefix) {
-    errs.couponPrefix = 'Coupon code prefix is required (e.g. FM-).';
-  } else if (config.couponPrefix !== couponPrefix) {
+  const rawPrefix = config.couponPrefix ?? 'FM-';
+  const couponPrefix = rawPrefix.trim() || 'FM-';
+  if (config.couponPrefix !== undefined && config.couponPrefix !== couponPrefix) {
     errs.couponPrefix = 'Coupon code prefix cannot start or end with a space.';
   } else if (!/^[A-Za-z0-9_-]+$/.test(couponPrefix)) {
     errs.couponPrefix = 'Use only letters, numbers, hyphens, and underscores.';
   }
 
+  const startingNumber = config.startingNumber ?? 1;
   if (
-    !Number.isSafeInteger(config.startingNumber) ||
-    config.startingNumber < 1
+    !Number.isSafeInteger(startingNumber) ||
+    startingNumber < 1
   ) {
     errs.startingNumber = 'Starting sequence number must be a whole number of 1 or greater.';
   }
 
-  const batchId = config.batchId.trim();
-  if (!batchId) {
-    errs.batchId = 'Batch ID is required (e.g. CASH-2026-01).';
-  } else if (config.batchId !== batchId) {
+  const rawBatchId = config.batchId ?? 'CASH-BATCH';
+  const batchId = rawBatchId.trim() || 'CASH-BATCH';
+  if (config.batchId !== undefined && config.batchId !== batchId) {
     errs.batchId = 'Batch ID cannot start or end with a space.';
   } else if (batchId.length > MAX_BATCH_ID_LENGTH) {
     errs.batchId = `Batch ID cannot exceed ${MAX_BATCH_ID_LENGTH} characters.`;
@@ -72,8 +71,9 @@ export const validateCashConfig = (
     errs.batchId = 'Batch ID cannot contain slashes or control characters.';
   }
 
-  if (![100, 250, 500].includes(config.couponsPerPdf)) {
-    errs.couponsPerPdf = 'Choose 100, 250, or 500 coupons per PDF.';
+  const couponsPerPdf = config.couponsPerPdf || 50;
+  if (!Number.isInteger(couponsPerPdf) || couponsPerPdf < 1) {
+    errs.couponsPerPdf = 'Choose a valid number of vouchers per PDF.';
   }
 
   if (config.prizeTiers.length === 0) {

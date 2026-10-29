@@ -4,14 +4,13 @@ import {
   ArrowRight,
   Banknote,
   FileCheck,
-  Hash,
-  Link,
+  Globe,
   ListChecks,
   Phone,
   Plus,
   Printer,
+  QrCode,
   RefreshCw,
-  ShieldAlert,
   Sparkles,
   Trash2,
   Upload,
@@ -27,36 +26,32 @@ import {
 
 interface CashConfigScreenProps {
   config: CashCouponConfig;
-  onChange: (updated: Partial<CashCouponConfig>) => void;
   errors: CashValidationErrors;
-  isValid: boolean;
+  onChange: (updates: Partial<CashCouponConfig>) => void;
   onProceedToPreview: () => void;
   onDirectGenerate: () => void;
+  isValid: boolean;
 }
 
 export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
   config,
-  onChange,
   errors,
-  isValid,
+  onChange,
   onProceedToPreview,
   onDirectGenerate,
+  isValid,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const totalCoupons = getTotalPrizeQuantity(config.prizeTiers);
   const totalValue = getTotalPrizeValue(config.prizeTiers);
+  const perFile = config.couponsPerPdf || 50;
   const totalPdfs = config.prizeTiers.reduce(
-    (total, tier) => total + Math.ceil(Math.max(tier.quantity, 0) / config.couponsPerPdf),
+    (total, tier) => total + Math.ceil(Math.max(tier.quantity, 0) / perFile),
     0
   );
-  const totalPages = config.prizeTiers.reduce(
-    (total, tier) => total + Math.ceil(Math.max(tier.quantity, 0) / 10),
-    0
-  );
-  const endSequence = (config.startingNumber || 1) + totalCoupons - 1;
-  const startCode = `${config.couponPrefix || 'FM-'}${String(config.startingNumber || 1).padStart(5, '0')}`;
-  const endCode = `${config.couponPrefix || 'FM-'}${String(Math.max(endSequence, config.startingNumber || 1)).padStart(5, '0')}`;
+  // Each 15cm x 20cm voucher occupies 1 page on an A4 sheet
+  const totalPages = totalCoupons;
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const file = event.target.files?.[0];
@@ -95,7 +90,13 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
   };
 
   const removeTier = (id: string): void => {
-    onChange({ prizeTiers: config.prizeTiers.filter((tier) => tier.id !== id) });
+    if (config.prizeTiers.length <= 1) {
+      alert('Keep at least one cash prize tier.');
+      return;
+    }
+    onChange({
+      prizeTiers: config.prizeTiers.filter((tier) => tier.id !== id),
+    });
   };
 
   return (
@@ -105,14 +106,14 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/40">
               <Banknote className="w-3.5 h-3.5" />
-              Cash Prize Campaign
+              Cash Prize Campaign • 15cm × 20cm Vouchers
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-white font-festive tracking-wide">
-              Cash Prize Batch Setup
+              Cash Prize Tier Setup
             </h2>
             <p className="text-stone-300 text-sm max-w-2xl leading-relaxed">
-              Set the exact number of coupons for each cash amount. The amount is hidden on the
-              printed card and revealed only after the customer scans the claim QR.
+              Set the exact number of vouchers for each cash prize tier. The card dimensions are 15cm wide × 20cm tall.
+              The prize amount is hidden on the printed card and revealed only after the customer scans the claim QR.
             </p>
           </div>
 
@@ -125,7 +126,7 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
                 : 'bg-stone-800 text-stone-500 cursor-not-allowed border border-stone-700'
             }`}
           >
-            <span>Preview Cards</span>
+            <span>Preview Voucher</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -139,29 +140,30 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
                 <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-xs flex items-center justify-center font-bold">
                   1
                 </span>
-                Brand & Claim Destination
+                Branding & Contact Information
               </h3>
               <p className="text-xs text-stone-400 mt-0.5">
-                The QR points to the WordPress claim page. Set this URL before printing.
+                Brand assets and customer support channels printed on every cash voucher.
               </p>
             </div>
 
-            <div className="space-y-3">
-              <label className="block text-xs font-bold uppercase tracking-wider text-amber-400">
-                Fresh Masala Logo <span className="text-red-400">*</span>
+            <div className="space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-stone-300">
+                Brand Logo <span className="text-red-400">*</span>
               </label>
-              <div className="flex flex-col sm:flex-row items-center gap-4 bg-stone-950/70 p-4 rounded-xl border border-stone-800">
-                <div className="w-48 h-20 bg-gradient-to-r from-[#4a0408] to-[#2c0205] border border-amber-500/40 rounded-lg p-2 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-inner">
+              <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl bg-stone-950/60 border border-stone-800">
+                <div className="w-32 h-14 bg-stone-900/80 border border-stone-800 rounded-lg p-2 flex items-center justify-center overflow-hidden flex-shrink-0">
                   {config.logoDataUrl ? (
                     <img
                       src={config.logoDataUrl}
-                      alt="Brand logo preview"
-                      className="max-h-full max-w-full object-contain"
+                      alt="Brand Logo"
+                      className="max-w-full max-h-full object-contain"
                     />
                   ) : (
-                    <span className="text-xs text-stone-500">No logo selected</span>
+                    <span className="text-[11px] text-stone-500 font-medium">No Logo</span>
                   )}
                 </div>
+
                 <div className="flex-1 space-y-2 w-full">
                   <div className="flex flex-wrap gap-2">
                     <input
@@ -248,17 +250,17 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-amber-400">
-                  Claim Page URL <span className="text-red-400">*</span>
+                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300">
+                  Website Claim URL <span className="text-red-400">*</span>
                 </label>
                 <div className="relative">
-                  <ShieldAlert className="w-4 h-4 text-amber-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Globe className="w-4 h-4 text-amber-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="url"
                     value={config.claimBaseUrl}
                     onChange={(event) => onChange({ claimBaseUrl: event.target.value })}
                     placeholder="https://freshmasala.com.np/claim/"
-                    className={`w-full bg-stone-950 pl-10 pr-3 py-2.5 rounded-xl border text-sm font-mono text-stone-100 placeholder-stone-600 focus:outline-none transition-all ${
+                    className={`w-full bg-stone-950 pl-10 pr-3 py-2.5 rounded-xl border text-sm text-stone-100 placeholder-stone-600 focus:outline-none transition-all ${
                       errors.claimBaseUrl
                         ? 'border-rose-500 focus:ring-1 focus:ring-rose-500'
                         : 'border-stone-700 focus:border-amber-500 focus:ring-1 focus:ring-amber-500'
@@ -271,7 +273,7 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
                   </p>
                 ) : (
                   <p className="text-[11px] text-stone-500">
-                    QR payload: <code className="text-amber-300">{config.claimBaseUrl || 'https://site/claim/'}?t=[token]</code>
+                    The QR code encodes <span className="font-mono text-stone-400">/claim/?t=&lt;token&gt;</span>.
                   </p>
                 )}
               </div>
@@ -279,20 +281,20 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label className="block text-xs font-bold uppercase tracking-wider text-stone-300">
-                    Follow QR
+                    Linktree / Social URL
                   </label>
-                  <label className="flex items-center gap-2 text-[11px] text-stone-400 cursor-pointer">
+                  <label className="inline-flex items-center gap-1 text-[11px] text-stone-400 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={config.includeLinktreeQr}
                       onChange={(event) => onChange({ includeLinktreeQr: event.target.checked })}
-                      className="accent-amber-500"
+                      className="rounded border-stone-700 bg-stone-900 text-amber-500 focus:ring-amber-500"
                     />
-                    Include Linktree QR
+                    <span>Print QR</span>
                   </label>
                 </div>
                 <div className="relative">
-                  <Link className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <QrCode className="w-4 h-4 text-amber-500 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="url"
                     value={config.linktreeUrl}
@@ -321,10 +323,10 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
                 <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-xs flex items-center justify-center font-bold">
                   2
                 </span>
-                Prize Tiers
+                Cash Prize Tiers
               </h3>
               <p className="text-xs text-stone-400 mt-0.5">
-                Exact counts per cash amount. Coupons are grouped by tier for printing.
+                Exact counts per cash amount. Vouchers are grouped by prize tier into separate PDF files.
               </p>
             </div>
 
@@ -370,7 +372,7 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
                     </div>
                     <div className="sm:col-span-3 space-y-1.5">
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-400">
-                        Coupons
+                        Vouchers
                       </label>
                       <input
                         type="number"
@@ -392,7 +394,7 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
                     </div>
                     <div className="sm:col-span-3">
                       <span className="block text-[10px] font-bold uppercase tracking-wider text-stone-400 mb-1.5">
-                        Tier Value
+                        Tier Total
                       </span>
                       <div className="px-3 py-2.5 rounded-xl bg-stone-900 border border-stone-800 text-sm font-bold text-amber-300 font-mono">
                         {formatNpr((tier.amount || 0) * (tier.quantity || 0))}
@@ -431,140 +433,22 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 border-t border-stone-800">
               <div className="bg-stone-950 p-3 rounded-xl border border-stone-800">
-                <span className="text-[10px] uppercase font-bold text-stone-400 block">Coupons</span>
+                <span className="text-[10px] uppercase font-bold text-stone-400 block">Total Vouchers</span>
                 <span className="text-lg font-black text-amber-300 font-mono">
                   {totalCoupons.toLocaleString()}
                 </span>
               </div>
               <div className="bg-stone-950 p-3 rounded-xl border border-stone-800">
-                <span className="text-[10px] uppercase font-bold text-stone-400 block">Total Payout</span>
+                <span className="text-[10px] uppercase font-bold text-stone-400 block">Total Liability</span>
                 <span className="text-lg font-black text-emerald-400 font-mono">
                   {formatNpr(totalValue)}
                 </span>
               </div>
               <div className="bg-stone-950 p-3 rounded-xl border border-stone-800 col-span-2 sm:col-span-1">
-                <span className="text-[10px] uppercase font-bold text-stone-400 block">Tiers</span>
+                <span className="text-[10px] uppercase font-bold text-stone-400 block">Prize Tiers</span>
                 <span className="text-lg font-black text-stone-200 font-mono">
                   {config.prizeTiers.length}
                 </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-stone-900/80 backdrop-blur border border-stone-800 rounded-2xl p-6 sm:p-7 shadow-xl space-y-5">
-            <div className="border-b border-stone-800 pb-4">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-xs flex items-center justify-center font-bold">
-                  3
-                </span>
-                Batch & Sequence
-              </h3>
-              <p className="text-xs text-stone-400 mt-0.5">
-                Codes are sequential and grouped by prize tier.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="space-y-1.5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300">
-                  Prefix <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={config.couponPrefix}
-                  onChange={(event) => onChange({ couponPrefix: event.target.value.toUpperCase() })}
-                  placeholder="FM-"
-                  maxLength={30}
-                  className={`w-full bg-stone-950 px-3 py-2.5 rounded-xl border text-sm font-mono text-stone-100 uppercase focus:outline-none ${
-                    errors.couponPrefix
-                      ? 'border-rose-500 focus:ring-1 focus:ring-rose-500'
-                      : 'border-stone-700 focus:border-amber-500 focus:ring-1 focus:ring-amber-500'
-                  }`}
-                />
-                {errors.couponPrefix && (
-                  <p className="text-xs text-rose-400">{errors.couponPrefix}</p>
-                )}
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300">
-                  Start Number <span className="text-red-400">*</span>
-                </label>
-                <div className="relative">
-                  <Hash className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="number"
-                    min={1}
-                    step={1}
-                    value={config.startingNumber}
-                    onChange={(event) =>
-                      onChange({ startingNumber: parseInt(event.target.value, 10) || 1 })
-                    }
-                    className={`w-full bg-stone-950 pl-10 pr-3 py-2.5 rounded-xl border text-sm font-mono text-stone-100 focus:outline-none ${
-                      errors.startingNumber
-                        ? 'border-rose-500 focus:ring-1 focus:ring-rose-500'
-                        : 'border-stone-700 focus:border-amber-500 focus:ring-1 focus:ring-amber-500'
-                    }`}
-                  />
-                </div>
-                {errors.startingNumber && (
-                  <p className="text-xs text-rose-400">{errors.startingNumber}</p>
-                )}
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300">
-                  Batch ID <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={config.batchId}
-                  onChange={(event) =>
-                    onChange({
-                      batchId: event.target.value.toUpperCase().replace(/\s+/g, '-'),
-                    })
-                  }
-                  placeholder="CASH-2026-01"
-                  maxLength={50}
-                  className={`w-full bg-stone-950 px-3 py-2.5 rounded-xl border text-sm font-mono text-stone-100 uppercase focus:outline-none ${
-                    errors.batchId
-                      ? 'border-rose-500 focus:ring-1 focus:ring-rose-500'
-                      : 'border-stone-700 focus:border-amber-500 focus:ring-1 focus:ring-amber-500'
-                  }`}
-                />
-                {errors.batchId && (
-                  <p className="text-xs text-rose-400">{errors.batchId}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300">
-                  Coupons Per PDF <span className="text-red-400">*</span>
-                </label>
-                <select
-                  value={config.couponsPerPdf}
-                  onChange={(event) =>
-                    onChange({
-                      couponsPerPdf: parseInt(event.target.value, 10) as 100 | 250 | 500,
-                    })
-                  }
-                  className="w-full bg-stone-950 px-3 py-2.5 rounded-xl border border-stone-700 text-sm font-semibold text-stone-100 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none"
-                >
-                  <option value={100}>100 coupons / file (10 A4 pages)</option>
-                  <option value={250}>250 coupons / file (25 A4 pages — Recommended)</option>
-                  <option value={500}>500 coupons / file (50 A4 pages)</option>
-                </select>
-              </div>
-
-              <div className="space-y-1.5">
-                <span className="block text-xs font-bold uppercase tracking-wider text-stone-300">
-                  Code Range
-                </span>
-                <div className="px-3 py-2.5 rounded-xl bg-stone-950 border border-stone-800 text-sm font-mono text-amber-300">
-                  {startCode} → {endCode}
-                </div>
               </div>
             </div>
           </div>
@@ -576,16 +460,16 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
               <div className="flex items-center justify-between border-b border-stone-800 pb-3.5">
                 <h4 className="text-sm font-black uppercase tracking-wider text-amber-300 flex items-center gap-2">
                   <FileCheck className="w-4 h-4 text-amber-400" />
-                  Batch Summary
+                  Campaign Summary
                 </h4>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-stone-800 text-stone-300 border border-stone-700">
-                  {config.batchId || 'UNNAMED'}
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                  15cm × 20cm
                 </span>
               </div>
 
               <div className="space-y-3 text-xs">
                 <div className="flex items-center justify-between py-1.5 border-b border-stone-800/60">
-                  <span className="text-stone-400">Total Coupons:</span>
+                  <span className="text-stone-400">Total Vouchers:</span>
                   <span className="font-bold text-base text-amber-300 font-mono">
                     {totalCoupons.toLocaleString()}
                   </span>
@@ -601,12 +485,16 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
                   <span className="font-bold text-stone-200">{config.prizeTiers.length}</span>
                 </div>
                 <div className="flex items-center justify-between py-1.5 border-b border-stone-800/60">
-                  <span className="text-stone-400">PDF Files:</span>
-                  <span className="font-bold text-stone-200">{totalPdfs}</span>
+                  <span className="text-stone-400">Voucher Size:</span>
+                  <span className="font-bold text-amber-300">150 × 200 mm</span>
                 </div>
                 <div className="flex items-center justify-between py-1.5 border-b border-stone-800/60">
                   <span className="text-stone-400">A4 Sheets:</span>
                   <span className="font-bold text-stone-200">{totalPages.toLocaleString()}</span>
+                </div>
+                <div className="flex items-center justify-between py-1.5 border-b border-stone-800/60">
+                  <span className="text-stone-400">PDF Files:</span>
+                  <span className="font-bold text-stone-200">{totalPdfs}</span>
                 </div>
                 <div className="flex items-center justify-between py-1.5">
                   <span className="text-stone-400">Manifest:</span>
@@ -614,11 +502,31 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
                 </div>
               </div>
 
+              <div className="space-y-1.5 pt-2 border-t border-stone-800">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-400">
+                  Vouchers Per PDF File
+                </label>
+                <select
+                  value={config.couponsPerPdf || 50}
+                  onChange={(event) =>
+                    onChange({
+                      couponsPerPdf: parseInt(event.target.value, 10),
+                    })
+                  }
+                  className="w-full bg-stone-950 px-3 py-2 rounded-xl border border-stone-800 text-xs font-semibold text-stone-200 focus:border-amber-500 focus:outline-none"
+                >
+                  <option value={25}>25 vouchers / file (25 A4 pages)</option>
+                  <option value={50}>50 vouchers / file (50 A4 pages — Recommended)</option>
+                  <option value={100}>100 vouchers / file (100 A4 pages)</option>
+                  <option value={250}>250 vouchers / file (250 A4 pages)</option>
+                </select>
+              </div>
+
               <div className="rounded-xl bg-amber-500/10 border border-amber-500/30 p-3 text-[11px] text-amber-200 leading-relaxed flex items-start gap-2">
                 <Wallet className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <span>
-                  The cash amount is <strong>not printed</strong>. Customers see it only after
-                  scanning. The first complete claim submission wins.
+                  The cash amount is <strong>never printed</strong> on the physical voucher.
+                  Customers reveal it instantly upon scanning. First complete claim submission wins.
                 </span>
               </div>
 
@@ -633,7 +541,7 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
                   }`}
                 >
                   <Printer className="w-4 h-4" />
-                  <span>View Live Card Preview</span>
+                  <span>View Voucher Preview</span>
                 </button>
                 <button
                   onClick={onDirectGenerate}
@@ -657,7 +565,7 @@ export const CashConfigScreen: React.FC<CashConfigScreenProps> = ({
               </div>
               <p className="text-[11px] text-stone-400 leading-relaxed">
                 Tokens are 32-character Base64URL strings generated with Web Crypto. Import the
-                manifest before distributing cards, and keep it private.
+                manifest into the WordPress plugin before distributing printed vouchers.
               </p>
             </div>
           </div>

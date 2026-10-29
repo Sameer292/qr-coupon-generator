@@ -45,9 +45,9 @@ export const buildCashCoupons = (
   const generatedAt = new Date().toISOString();
   const existingTokens = new Set<string>();
   const coupons: CashCouponItem[] = [];
-  const couponPrefix = config.couponPrefix.trim();
-  const batchId = config.batchId.trim();
-  let sequence = config.startingNumber;
+  const couponPrefix = (config.couponPrefix || 'FM-').trim();
+  const batchId = (config.batchId || 'CASH-BATCH').trim();
+  let sequence = config.startingNumber || 1;
   let generated = 0;
 
   for (const tier of config.prizeTiers) {
@@ -101,7 +101,7 @@ export const buildCashBatchSummary = (
   });
 
   return {
-    batch_id: config.batchId.trim(),
+    batch_id: (config.batchId || 'CASH-BATCH').trim(),
     currency: CASH_CURRENCY,
     total_coupons: coupons.length,
     total_value: coupons.reduce((total, coupon) => total + coupon.prize_amount, 0),

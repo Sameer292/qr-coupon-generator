@@ -141,11 +141,11 @@ export const CashPreviewScreen: React.FC<CashPreviewScreenProps> = ({
             Live Cash Coupon Preview
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-white font-festive tracking-wide">
-            Preview the Printed Card
+            Preview the Printed Voucher
           </h2>
           <p className="text-stone-400 text-sm mt-1 max-w-2xl">
-            This is the exact 90mm × 50mm artwork. The cash amount is intentionally absent from
-            the print; the claim page resolves it from the secret QR token.
+            This is the exact 15cm × 20cm (150mm × 200mm) portrait voucher. The cash prize amount is intentionally absent
+            from the physical print; the claim page reveals it from the secret QR token.
           </p>
         </div>
 
@@ -174,10 +174,10 @@ export const CashPreviewScreen: React.FC<CashPreviewScreenProps> = ({
             <div className="flex items-center justify-between gap-3 mb-4">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <Printer className="w-4 h-4 text-amber-400" />
-                Front of Coupon
+                Voucher Design (15cm × 20cm)
               </h3>
               <span className="text-[10px] uppercase tracking-wider text-stone-400 font-mono">
-                {config.batchId} • {sampleCode}
+                Sample: {sampleCode}
               </span>
             </div>
 
@@ -189,10 +189,10 @@ export const CashPreviewScreen: React.FC<CashPreviewScreenProps> = ({
                 sampleCode={sampleCode}
               />
             ) : (
-              <div className="aspect-[90/50] w-full rounded-xl bg-stone-950 border border-stone-800 flex items-center justify-center">
+              <div className="aspect-[15/20] max-w-sm sm:max-w-md mx-auto w-full rounded-2xl bg-stone-950 border border-stone-800 flex items-center justify-center">
                 <div className="flex items-center gap-2 text-stone-400 text-xs">
                   <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
-                  Rendering coupon artwork...
+                  Rendering voucher artwork...
                 </div>
               </div>
             )}
@@ -221,7 +221,7 @@ export const CashPreviewScreen: React.FC<CashPreviewScreenProps> = ({
                   Test Print Sheet
                 </h4>
                 <p className="text-[11px] text-stone-400 mt-0.5">
-                  One A4 page with 10 sample cards. No real tokens are included.
+                  Sample A4 test sheet with corner crop marks. No real tokens are included.
                 </p>
               </div>
               <button

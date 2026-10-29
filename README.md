@@ -28,7 +28,7 @@ The platform supports two distinct promotional coupon campaigns:
 
 | Mode | Outputs | Details |
 |---|---|---|
-| **Cash Prize** | Split PDFs, `manifest.csv`, `batch-summary.json`, ZIP | Tier-grouped PDFs (organized in folders by cash prize amount), 6-column manifest, summary JSON with code ranges. |
+| **Cash Prize** | Split PDFs, `manifest.csv`, `batch-summary.json`, ZIP | Tier-grouped PDFs (15cm × 20cm portrait vouchers with corner crop marks), 6-column manifest, summary JSON. |
 | **Weekly Draw** | Split PDFs, `manifest.csv`, ZIP | Split PDFs (100/250/500 coupons per file), 4-column manifest. |
 
 ### Manifest Schemas
