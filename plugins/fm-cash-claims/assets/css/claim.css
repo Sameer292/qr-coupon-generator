@@ -1,70 +1,65 @@
+@font-face { font-family: "Public Sans"; font-style: normal; font-weight: 400 800; font-display: swap; src: url("../fonts/public-sans-latin.woff2") format("woff2"); }
+
 /** Campaign styles are scoped so the site's other pages retain their theme. */
 .fm-cash-campaign {
-	--fm-ink: #30241f;
-	--fm-muted: #71645a;
-	--fm-paper: #f8f4ec;
-	--fm-line: #ded7cd;
-	--fm-red: #772626;
-	--fm-red-dark: #581c21;
-	--fm-gold: #edc47b;
+	--fm-ink: #203b34;
+	--fm-muted: #617269;
+	--fm-paper: #f6faf7;
+	--fm-line: #dce5df;
+	--fm-accent: #087b65;
+	--fm-accent-dark: #123e33;
+	--fm-gold: #f2c66e;
 	--fm-green: #246747;
 	--fm-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 	margin: 0;
 	background: var(--fm-paper);
 	color: var(--fm-ink);
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 	font-size: 16px;
 	line-height: 1.55;
 }
 .fm-cash-campaign *, .fm-cash-campaign *::before, .fm-cash-campaign *::after { box-sizing: border-box; }
 .fm-cash-campaign a { color: inherit; }
-.fm-cash-campaign :focus-visible { outline: 3px solid var(--fm-red); outline-offset: 4px; }
+.fm-cash-campaign :focus-visible { outline: 3px solid var(--fm-accent); outline-offset: 4px; }
 .fm-claim-header, .fm-claim-footer { width: min(1080px, calc(100% - 64px)); margin-inline: auto; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-.fm-claim-header { padding-block: 32px; }
+.fm-claim-header { padding-block: 16px; }
+.fm-claim-logo { display: block; width: 178px; height: 100px; object-fit: contain; margin: -14px -24px; }
 .fm-claim-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-.fm-claim-brand-mark { width: 40px; height: 40px; color: var(--fm-red); flex-shrink: 0; }
-.fm-claim-brand strong { display: block; font-family: Georgia, "Times New Roman", serif; font-size: 25px; line-height: 1.2; letter-spacing: -.04em; }
-.fm-claim-brand small, .fm-claim-header-note { color: var(--fm-muted); font-size: 13px; }
+.fm-claim-header-note { display: inline-flex; align-items: center; gap: 10px; color: var(--fm-muted); font-size: 13px; }
 .fm-claim-page { padding: 24px 32px 48px; }
 .fm-claim-shell { width: 100%; max-width: 680px; margin-inline: auto; }
-.fm-claim-layout { display: grid; grid-template-columns: 0.92fr 1.08fr; align-items: stretch; max-width: 1080px; }
-.fm-claim-story { background: var(--fm-red-dark); color: var(--fm-paper); padding: 48px 42px; border-radius: 6px 0 0 6px; display: flex; flex-direction: column; }
-.fm-claim-story h1 { margin: 0; font: 400 clamp(36px, 3.3vw, 48px)/1.08 Georgia, "Times New Roman", serif; letter-spacing: -.045em; }
-.fm-claim-story > p { margin: 24px 0 0; font-size: 16px; line-height: 1.65; max-width: 35ch; }
-.fm-claim-story .fm-claim-story-note { color: #e6c8bc; font-size: 13px; margin-top: auto; padding-top: 32px; }
-.fm-mystery-ticket { margin: 40px auto; padding: 26px 24px; width: min(100%, 290px); background: var(--fm-paper); color: var(--fm-red-dark); text-align: center; transform: rotate(-5deg); border-radius: 3px; }
-.fm-mystery-ticket > span { font: 23px/1.2 Georgia, serif; }
-.fm-ticket-amount { font: italic 112px/1.35 Georgia, serif; color: var(--fm-red); }
-.fm-mystery-ticket strong, .fm-mystery-ticket small { display: block; font-size: 14px; }
-.fm-mystery-ticket small { margin-top: 4px; color: var(--fm-muted); }
-.fm-claim-card { background: #fff; padding: 40px; border-radius: 6px; }
-.fm-claim-layout .fm-claim-card { border-radius: 0 6px 6px 0; }
-.fm-claim-card h1, .fm-claim-card h2 { margin: 0 0 12px; font-family: Georgia, "Times New Roman", serif; font-weight: 400; letter-spacing: -.04em; line-height: 1.15; color: var(--fm-ink); }
-.fm-claim-card h1 { font-size: 36px; }
-.fm-claim-card h2 { font-size: 32px; }
+.fm-claim-layout { display: grid; grid-template-columns: 0.94fr 1.06fr; gap: 24px; align-items: stretch; max-width: 1080px; }
+.fm-claim-story { background: var(--fm-accent-dark); color: var(--fm-paper); padding: 78px 36px 32px; border-radius: 32px; background-image: url("../images/tihar-garland.svg"); background-repeat: no-repeat; background-size: 100% auto; display: flex; flex-direction: column; }
+.fm-claim-story h1 { margin: 0; font: 700 clamp(34px, 3.1vw, 44px)/1.15 "Public Sans", sans-serif; letter-spacing: -.045em; }
+.fm-claim-story > p { margin: 20px 0 0; font-size: 16px; line-height: 1.65; max-width: 35ch; }
+.fm-claim-card { background: #fff; padding: 40px; border-radius: 32px; }
+
+.fm-claim-card h1, .fm-claim-card h2 { margin: 0 0 12px; font-family: "Public Sans", sans-serif; font-weight: 700; letter-spacing: -.04em; line-height: 1.15; color: var(--fm-ink); }
+.fm-claim-card h1 { font-size: 30px; }
+.fm-claim-card h2 { font-size: 28px; }
 .fm-claim-intro { margin: 0 0 28px; color: var(--fm-muted); font-size: 15px; line-height: 1.65; }
 .fm-claim-coupon { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 28px; font-size: 13px; color: var(--fm-muted); }
 .fm-claim-coupon strong { color: var(--fm-ink); font-weight: 600; overflow-wrap: anywhere; }
 .fm-claim-form { display: grid; gap: 20px; }
 .fm-claim-field { display: grid; gap: 8px; }
 .fm-claim-field > span { font-size: 14px; font-weight: 600; }
-.fm-claim-field b { color: var(--fm-red); }
+.fm-claim-field b { color: var(--fm-accent); }
 .fm-claim-field em { margin-left: 4px; color: var(--fm-muted); font-size: 13px; font-style: normal; font-weight: 400; }
-.fm-claim-field input { display: block; width: 100%; min-height: 50px; padding: 12px 14px; border: 1px solid var(--fm-line); border-radius: 4px; background: #fff; color: var(--fm-ink); font: inherit; font-size: 16px; line-height: 1.4; transition: border-color 160ms ease; }
-.fm-claim-field input::placeholder { color: #81766b; opacity: 1; }
-.fm-claim-field input:focus { border-color: var(--fm-red); }
+.fm-claim-field input { display: block; width: 100%; min-height: 50px; padding: 12px 14px; border: 1px solid var(--fm-line); border-radius: 16px; background: #fff; color: var(--fm-ink); font: inherit; font-size: 16px; line-height: 1.4; transition: border-color 160ms ease; }
+.fm-claim-field input::placeholder { color: #7b867e; opacity: 1; }
+.fm-claim-field input:focus { border-color: var(--fm-accent); }
 .fm-claim-field small { font-size: 13px; color: var(--fm-muted); }
 .fm-claim-check { display: flex; align-items: flex-start; gap: 12px; color: var(--fm-muted); font-size: 13px; line-height: 1.7; cursor: pointer; }
-.fm-claim-check input { width: 20px; height: 20px; flex-shrink: 0; margin: 2px 0 0; accent-color: var(--fm-red); }
-.fm-claim-submit, .fm-claim-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 16px; min-height: 52px; padding: 14px 20px; border: 0; border-radius: 4px; font-family: inherit; font-size: 15px; font-weight: 600; line-height: 1.4; text-decoration: none; cursor: pointer; transition: background-color 160ms ease, transform 160ms var(--fm-ease-out); }
-.fm-cash-campaign .fm-claim-submit { background: var(--fm-red); color: #fff; }
+.fm-claim-check input { width: 20px; height: 20px; flex-shrink: 0; margin: 2px 0 0; accent-color: var(--fm-accent); }
+.fm-claim-submit, .fm-claim-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 16px; min-height: 54px; padding: 14px 22px; border: 0; border-radius: 999px; font-family: inherit; font-size: 15px; font-weight: 600; line-height: 1.4; text-decoration: none; cursor: pointer; transition: background-color 160ms ease, transform 160ms var(--fm-ease-out); }
+.fm-cash-campaign .fm-claim-submit { background: var(--fm-accent); color: #fff; }
 .fm-claim-form .fm-claim-submit { justify-content: space-between; }
 .fm-claim-submit:active { transform: scale(.98); }
 .fm-claim-submit:disabled { cursor: wait; opacity: .75; }
 .fm-cash-campaign .fm-claim-secondary { background: var(--fm-paper); color: var(--fm-ink); }
 @media (hover: hover) and (pointer: fine) {
-	.fm-claim-submit:hover { background: var(--fm-red-dark); }
-	.fm-claim-secondary:hover { background: #ece5da; }
+	.fm-claim-submit:hover { background: var(--fm-accent-dark); }
+	.fm-claim-secondary:hover { background: #edf3ed; }
 }
 .fm-claim-footnote { margin: 14px 0 0; text-align: center; color: var(--fm-muted); font-size: 13px; }
 .fm-claim-support { display: grid; gap: 6px; margin-top: 28px; color: var(--fm-muted); font-size: 13px; }
@@ -73,7 +68,7 @@
 .fm-claim-support-address { white-space: pre-line; }
 .fm-claim-footer { padding-block: 16px 32px; font-size: 13px; color: var(--fm-muted); }
 .fm-claim-footer > span:first-child { font-weight: 600; }
-.fm-claim-alert { padding: 16px; margin: 0 0 24px; border-radius: 4px; background: #fbede9; color: #882e27; font-size: 14px; }
+.fm-claim-alert { padding: 16px; margin: 0 0 24px; border-radius: 16px; background: #fbede9; color: #882e27; font-size: 14px; }
 .fm-claim-alert ul { padding-left: 18px; margin: 8px 0 0; }
 .fm-claim-details { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 28px 0; }
 .fm-claim-details > div { min-width: 0; }
@@ -81,72 +76,102 @@
 .fm-claim-details dt { color: var(--fm-muted); font-size: 13px; margin-bottom: 4px; }
 .fm-claim-details dd { margin: 0; overflow-wrap: anywhere; font-size: 14px; font-weight: 600; }
 .fm-claim-ref { letter-spacing: .02em; }
-.fm-claim-next { padding: 24px; margin-bottom: 24px; background: var(--fm-paper); border-radius: 4px; font-size: 14px; }
+.fm-claim-next { padding: 24px; margin-bottom: 24px; background: var(--fm-paper); border-radius: 16px; font-size: 14px; }
 .fm-claim-next strong { display: block; margin-bottom: 8px; font-weight: 600; }
 .fm-claim-next p { margin: 0; }
 .fm-claim-next ol { margin: 0; padding-left: 18px; }
 .fm-claim-next li + li { margin-top: 6px; }
 .fm-claim-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .fm-claim-actions > * { flex: 1 1 220px; }
-.fm-claim-error-icon { color: var(--fm-red); font: 48px/1 Georgia, serif; margin-bottom: 20px; }
+.fm-claim-error-icon { color: var(--fm-accent); font: 48px/1 Georgia, serif; margin-bottom: 20px; }
 .fm-claim-status-hero { margin-bottom: 28px; }
 .fm-claim-status-hero .fm-status { margin-bottom: 16px; }
-.fm-status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 13px; font-weight: 600; }
+.fm-status { display: inline-block; padding: 4px 8px; border-radius: 16px; font-size: 13px; font-weight: 600; }
 .fm-status-pending { background: #f9edce; color: #795315; }
 .fm-status-paid { background: #e6f1e9; color: var(--fm-green); }
 .fm-status-rejected { background: #fbede9; color: #882e27; }
-.fm-claim-prize { background: var(--fm-red-dark); color: var(--fm-paper); padding: 24px; border-radius: 4px; }
+.fm-claim-prize { background: var(--fm-accent-dark); color: var(--fm-paper); padding: 24px; border-radius: 16px; }
 .fm-claim-eyebrow, .fm-claim-prize-caption { display: block; font-size: 14px; }
-.fm-claim-prize strong { display: block; font: 48px/1.3 Georgia, serif; color: var(--fm-gold); overflow-wrap: anywhere; }
-.fm-prize-reveal { position: relative; isolation: isolate; overflow: hidden; padding: 44px 16px; margin: -40px -40px 32px; min-height: 244px; border-radius: 6px 6px 0 0; background: var(--fm-red-dark); text-align: center; color: var(--fm-paper); }
+.fm-claim-prize strong { display: block; font: 700 48px/1.3 "Public Sans", sans-serif; color: var(--fm-gold); overflow-wrap: anywhere; }
+.fm-claim-story .fm-festival-greeting { margin: 0 0 14px; font-size: 13px; color: var(--fm-gold); font-weight: 600; }
+.fm-festive-products { margin: 12px -16px 28px; }
+.fm-product-display { position: relative; height: 310px; }
+.fm-product { position: absolute; bottom: 0; width: 48%; height: 100%; object-fit: contain; }
+.fm-product-tea { left: -1%; transform: rotate(-12deg) translateY(12px); }
+.fm-product-garam { left: 26%; z-index: 2; transform: translateY(-8px); }
+.fm-product-momo { right: -2%; transform: rotate(12deg) translateY(12px); }
+.fm-festive-products figcaption { color: #cee1d6; text-align: center; font-size: 13px; }
+.fm-festival-close { display: flex; align-items: center; gap: 14px; margin-top: auto; }
+.fm-festival-close img { flex-shrink: 0; }
+.fm-festival-close p { margin: 0; color: #cee1d6; font-size: 13px; line-height: 1.7; }
+.fm-prize-reveal { position: relative; isolation: isolate; overflow: hidden; display: grid; place-items: center; padding: 76px 24px 52px; margin: -40px -40px 32px; min-height: 352px; border-radius: 32px 32px 24px 24px; background: var(--fm-accent-dark) url("../images/tihar-garland.svg") center top / 100% auto no-repeat; text-align: center; color: var(--fm-paper); }
+.fm-prize-reveal-content { position: relative; width: 100%; }
 .fm-prize-reveal-content > span { font-size: 15px; }
-.fm-prize-amount { display: block; margin: 8px 0; font: 400 clamp(38px, 9vw, 72px)/1.2 Georgia, serif; letter-spacing: -.055em; color: var(--fm-gold); overflow-wrap: anywhere; }
-.fm-prize-reveal-content > p { margin: 12px 0 0; font-size: 13px; }
-.fm-prize-seal { display: none; position: absolute; inset: 0; align-items: center; justify-content: center; flex-direction: column; gap: 10px; background: var(--fm-red-dark); color: var(--fm-paper); }
-.fm-prize-seal > span { display: grid; place-items: center; width: 66px; height: 66px; border: 2px solid var(--fm-gold); border-radius: 50%; font: 24px Georgia, serif; color: var(--fm-gold); }
-.fm-prize-seal > strong { font: 28px Georgia, serif; font-weight: 400; }
-.fm-prize-seal > small { font-size: 13px; }
-.fm-reveal-playing .fm-prize-seal { display: flex; animation: fm-seal-out 600ms cubic-bezier(0.77, 0, 0.175, 1) 600ms both; }
-.fm-reveal-playing .fm-prize-reveal-content { animation: fm-prize-in 600ms var(--fm-ease-out) 800ms both; }
-.fm-prize-confetti { position: absolute; left: 50%; top: 24%; width: 6px; height: 12px; pointer-events: none; }
+.fm-prize-amount { display: block; margin: 16px 0; font: 750 clamp(38px, 8vw, 72px)/1.15 "Public Sans", sans-serif; letter-spacing: -.055em; color: var(--fm-gold); overflow-wrap: anywhere; }
+.fm-prize-reveal-content > p { margin: 14px 0 0; font-size: 13px; }
+.fm-prize-seal { display: none; position: absolute; inset: 0; z-index: 2; align-items: center; justify-content: center; flex-direction: column; gap: 14px; color: var(--fm-paper); }
+.fm-seal-logo { width: 126px; height: 72px; object-fit: contain; margin: -12px 0; }
+.fm-prize-seal > strong { font: 650 26px/1.25 "Public Sans", sans-serif; letter-spacing: -.035em; }
+.fm-prize-seal > small { font-size: 13px; color: #cee1d6; }
+.fm-reveal-diyas { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.fm-reveal-shutter { display: none; position: absolute; top: 0; bottom: 0; width: 50.5%; z-index: 1; background: var(--fm-accent-dark); }
+.fm-reveal-shutter-left { left: 0; }
+.fm-reveal-shutter-right { right: 0; }
+/* A saved claim gets one deliberately paced Tihar celebration. */
+.fm-reveal-playing .fm-prize-seal { display: flex; animation: fm-seal-out 500ms cubic-bezier(0.77, 0, 0.175, 1) 1600ms both; }
+.fm-reveal-playing .fm-reveal-diyas img { animation: fm-lamp-in 500ms var(--fm-ease-out) both; }
+.fm-reveal-playing .fm-reveal-diyas img:nth-child(2) { animation-delay: 250ms; }
+.fm-reveal-playing .fm-reveal-diyas img:nth-child(3) { animation-delay: 500ms; }
+.fm-reveal-playing .fm-reveal-shutter { display: block; animation: fm-curtain-left 1000ms cubic-bezier(0.77, 0, 0.175, 1) 1700ms both; }
+.fm-reveal-playing .fm-reveal-shutter-right { animation-name: fm-curtain-right; }
+.fm-reveal-playing .fm-prize-reveal-content { animation: fm-prize-in 850ms var(--fm-ease-out) 2100ms both; }
+.fm-prize-confetti { position: absolute; top: 48%; z-index: 3; width: 8px; height: 13px; border-radius: 70% 0 70% 0; pointer-events: none; }
 @keyframes fm-seal-out { to { opacity: 0; transform: translateY(-24px) scale(.97); } }
-@keyframes fm-prize-in { from { opacity: 0; transform: translateY(16px) scale(.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes fm-lamp-in { from { opacity: 0; transform: translateY(8px) scale(.95); } to { opacity: 1; transform: none; } }
+@keyframes fm-curtain-left { to { transform: translateX(-102%); } }
+@keyframes fm-curtain-right { to { transform: translateX(102%); } }
+@keyframes fm-prize-in { from { opacity: 0; transform: translateY(20px) scale(.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
 .fm-claim-honeypot { position: absolute !important; left: -9999px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; } /* taste-skill-ignore: offscreen spam honeypot, not a divider. */
 @media (max-width: 860px) {
 	.fm-claim-layout { max-width: 600px; grid-template-columns: 1fr; }
-	.fm-claim-story { padding: 32px; border-radius: 6px 6px 0 0; }
+	.fm-claim-story { padding: 72px 32px 28px; border-radius: 28px; }
 	.fm-claim-story h1 { font-size: 38px; }
+	.fm-product-display { height: 230px; max-width: 400px; margin-inline: auto; }
+	.fm-festival-close { display: none; }
 	.fm-claim-story > p { max-width: 42ch; margin-top: 16px; }
-	.fm-mystery-ticket, .fm-claim-story .fm-claim-story-note { display: none; }
-	.fm-claim-layout .fm-claim-card { border-radius: 0 0 6px 6px; }
+	.fm-claim-layout .fm-claim-card { border-radius: 28px; }
 }
 @media (max-width: 560px) {
 	.fm-claim-header, .fm-claim-footer { width: calc(100% - 40px); }
-	.fm-claim-header { padding-block: 24px; }
+	.fm-claim-header { padding-block: 12px; }
 	.fm-claim-header-note { display: none; }
-	.fm-claim-brand strong { font-size: 23px; }
 	.fm-claim-page { padding: 8px 20px 32px; }
-	.fm-claim-story { padding: 28px 24px; }
-	.fm-claim-story h1 { font-size: 34px; }
-	.fm-claim-story > p { font-size: 15px; }
+	.fm-claim-story { padding: 64px 24px 24px; }
+	.fm-claim-story h1 { font-size: 32px; }
+	.fm-claim-story > p { font-size: 14px; }
+	.fm-claim-layout { gap: 16px; }
+	.fm-product-display { height: 170px; }
+	.fm-festive-products { margin-bottom: 0; }
+	.fm-festive-products figcaption { font-size: 12px; margin-top: 4px; }
 	.fm-claim-card { padding: 28px 24px; }
-	.fm-claim-card h1, .fm-claim-card h2 { font-size: 30px; }
+	.fm-claim-card h1, .fm-claim-card h2 { font-size: 26px; }
 	.fm-claim-coupon { margin-bottom: 24px; }
 	.fm-claim-form { gap: 18px; }
 	.fm-claim-check, .fm-claim-field small, .fm-claim-footnote { font-size: 13px; }
-	.fm-prize-reveal { margin: -28px -24px 28px; padding-block: 36px; min-height: 218px; }
+	.fm-prize-reveal { margin: -28px -24px 28px; padding: 64px 16px 44px; min-height: 320px; border-radius: 28px 28px 22px 22px; }
+	.fm-prize-amount { font-size: clamp(32px, 10vw, 46px); }
 	.fm-claim-footer { align-items: flex-start; flex-direction: column; gap: 6px; }
 }
 @media (prefers-reduced-motion: reduce) {
 	.fm-cash-campaign *, .fm-cash-campaign *::before, .fm-cash-campaign *::after { animation: none !important; transition: none !important; }
-	.fm-prize-seal, .fm-prize-confetti { display: none !important; }
+	.fm-prize-seal, .fm-reveal-shutter, .fm-prize-confetti { display: none !important; }
 	.fm-prize-reveal-content { opacity: 1 !important; transform: none !important; }
 }
 @media print {
 	.fm-cash-campaign { background: #fff; }
-	.fm-claim-header, .fm-claim-footer, .fm-claim-support, .fm-claim-actions, .fm-prize-seal, .fm-prize-confetti { display: none !important; }
+	.fm-claim-header, .fm-claim-footer, .fm-claim-support, .fm-claim-actions, .fm-prize-seal, .fm-reveal-shutter, .fm-prize-confetti { display: none !important; }
 	.fm-claim-page, .fm-claim-card { padding: 0; }
-	.fm-prize-reveal { margin: 0 0 24px; background: #fff; color: #30241f; min-height: 0; }
-	.fm-prize-amount { color: #30241f; }
+	.fm-prize-reveal { margin: 0 0 24px; background: #fff; color: #203b34; min-height: 0; }
+	.fm-prize-amount { color: #203b34; }
 	.fm-prize-reveal-content { animation: none !important; opacity: 1 !important; transform: none !important; }
 }

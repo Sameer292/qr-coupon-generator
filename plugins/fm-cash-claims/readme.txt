@@ -4,7 +4,7 @@ Tags: coupons, qr code, cash claims, prize campaign, payouts
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,6 +52,11 @@ A batch can only be deleted if no coupons from that batch have been claimed or m
 Coupons are tracked in MySQL with unique constraints and checked in atomic transactions with `FOR UPDATE` row locks. The first valid submission transitions the coupon from `issued` to `claimed`.
 
 == Changelog ==
+
+= 1.2.0 =
+* Fresh Masala's official logo, Garam Masala, Momo Masala, and Tea Masala imagery bundled locally.
+* Softer rounded campaign pages with the site's teal colours and Public Sans typography.
+* Subtle Tihar marigolds and diyas, with a staged curtain reveal and golden petal celebration.
 
 = 1.1.0 =
 * Redesigned campaign pages with a standalone Fresh Masala frame.

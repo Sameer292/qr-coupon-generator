@@ -12,6 +12,7 @@ remove_action( 'wp_head', '_wp_render_title_tag', 1 );
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="preload" href="<?php echo esc_url( FM_CASH_CLAIMS_URL . 'assets/fonts/public-sans-latin.woff2' ); ?>" as="font" type="font/woff2" crossorigin />
 	<title><?php esc_html_e( 'Your cash prize · Fresh Masala', 'fm-cash-claims' ); ?></title>
 	<?php wp_head(); ?>
 </head>
@@ -19,8 +20,7 @@ remove_action( 'wp_head', '_wp_render_title_tag', 1 );
 <?php wp_body_open(); ?>
 <header class="fm-claim-header">
 	<a class="fm-claim-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="<?php esc_attr_e( 'Fresh Masala home', 'fm-cash-claims' ); ?>">
-		<svg class="fm-claim-brand-mark" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M24 3 29 15 42 8 35 21 47 24 35 29 42 42 29 35 24 47 19 35 6 42 13 29 1 24 13 19 6 6 19 13Z" fill="currentColor"/><circle cx="24" cy="24" r="5" fill="#f8f4ec"/></svg>
-		<span><strong>Fresh Masala</strong><small><?php esc_html_e( 'A little more to celebrate.', 'fm-cash-claims' ); ?></small></span>
+		<img class="fm-claim-logo" src="<?php echo esc_url( FM_CASH_CLAIMS_URL . 'assets/images/fresh-masala-logo.png' ); ?>" alt="Fresh Masala" width="664" height="376" fetchpriority="high" />
 	</a>
-	<span class="fm-claim-header-note"><?php esc_html_e( 'Cash prize campaign', 'fm-cash-claims' ); ?></span>
+	<span class="fm-claim-header-note"><img src="<?php echo esc_url( FM_CASH_CLAIMS_URL . 'assets/images/tihar-diya.svg' ); ?>" alt="" width="32" height="32" /><?php esc_html_e( 'A little light. A little joy.', 'fm-cash-claims' ); ?></span>
 </header>

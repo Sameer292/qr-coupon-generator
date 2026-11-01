@@ -187,6 +187,9 @@ save **Settings → Permalinks** once.
 
 ## 6. Claim Page Verification
 
+The campaign uses Fresh Masala's official logo, product images, and teal branding
+with rounded Tihar details. See [brand assets and sources](brand-assets.md).
+
 With the local WordPress site running, check the actual templates with:
 
 ```bash

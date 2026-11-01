@@ -24,15 +24,21 @@ require FM_CASH_CLAIMS_DIR . 'templates/page-header.php';
 <main class="fm-claim-page">
 	<div class="fm-claim-shell fm-claim-layout">
 		<section class="fm-claim-story" aria-labelledby="fm-claim-title">
-			<h1 id="fm-claim-title"><?php esc_html_e( 'A little spice.', 'fm-cash-claims' ); ?><br /><?php esc_html_e( 'A big surprise.', 'fm-cash-claims' ); ?></h1>
-			<p><?php esc_html_e( 'Your Fresh Masala coupon has a cash prize waiting. Tell us a little about yourself to reveal it.', 'fm-cash-claims' ); ?></p>
-			<div class="fm-mystery-ticket" aria-hidden="true">
-				<span>Fresh Masala</span>
-				<div class="fm-ticket-amount">?</div>
-				<strong><?php esc_html_e( 'A delicious little mystery.', 'fm-cash-claims' ); ?></strong>
-				<small><?php esc_html_e( 'Yours to unwrap.', 'fm-cash-claims' ); ?></small>
+			<p class="fm-festival-greeting"><?php esc_html_e( 'A Fresh Masala Tihar', 'fm-cash-claims' ); ?></p>
+			<h1 id="fm-claim-title"><?php esc_html_e( 'A little light.', 'fm-cash-claims' ); ?><br /><?php esc_html_e( 'A lot of flavour.', 'fm-cash-claims' ); ?></h1>
+			<p><?php esc_html_e( 'Good food brings us together. This Tihar, your Fresh Masala coupon brings a cash surprise, too.', 'fm-cash-claims' ); ?></p>
+			<figure class="fm-festive-products">
+				<div class="fm-product-display">
+					<img class="fm-product fm-product-tea" src="<?php echo esc_url( FM_CASH_CLAIMS_URL . 'assets/images/tea-masala.png' ); ?>" alt="Fresh Masala Tea Masala" width="434" height="575" />
+					<img class="fm-product fm-product-garam" src="<?php echo esc_url( FM_CASH_CLAIMS_URL . 'assets/images/garam-masala.png' ); ?>" alt="Fresh Masala Garam Masala" width="434" height="575" />
+					<img class="fm-product fm-product-momo" src="<?php echo esc_url( FM_CASH_CLAIMS_URL . 'assets/images/momo-masala.png' ); ?>" alt="Fresh Masala Momo Masala" width="434" height="575" />
+				</div>
+				<figcaption><?php esc_html_e( 'Familiar flavours. Festive memories.', 'fm-cash-claims' ); ?></figcaption>
+			</figure>
+			<div class="fm-festival-close">
+				<img src="<?php echo esc_url( FM_CASH_CLAIMS_URL . 'assets/images/tihar-diya.svg' ); ?>" alt="" width="64" height="64" />
+				<p><?php esc_html_e( 'May your home be full of light, flavour, and lovely surprises.', 'fm-cash-claims' ); ?></p>
 			</div>
-			<p class="fm-claim-story-note"><?php esc_html_e( 'One coupon. One claim. A moment worth celebrating.', 'fm-cash-claims' ); ?></p>
 		</section>
 
 		<section class="fm-claim-card" aria-labelledby="fm-details-title">

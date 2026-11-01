@@ -29,11 +29,18 @@ require FM_CASH_CLAIMS_DIR . 'templates/page-header.php';
 				<div class="fm-prize-reveal-content" role="status">
 					<span><?php esc_html_e( 'Your cash prize', 'fm-cash-claims' ); ?></span>
 					<strong class="fm-prize-amount"><?php echo esc_html( $prize_display ); ?></strong>
-					<p><?php esc_html_e( 'A little thank you. A lovely surprise.', 'fm-cash-claims' ); ?></p>
+					<p><?php esc_html_e( 'Wishing you a bright and joyful Tihar.', 'fm-cash-claims' ); ?></p>
 				</div>
-				<div class="fm-prize-seal" aria-hidden="true"><span>FM</span><strong><?php esc_html_e( 'This one is yours.', 'fm-cash-claims' ); ?></strong><small><?php esc_html_e( 'Unwrapping your surprise…', 'fm-cash-claims' ); ?></small></div>
+				<div class="fm-reveal-shutter fm-reveal-shutter-left" aria-hidden="true"></div>
+				<div class="fm-reveal-shutter fm-reveal-shutter-right" aria-hidden="true"></div>
+				<div class="fm-prize-seal" aria-hidden="true">
+					<img class="fm-seal-logo" src="<?php echo esc_url( FM_CASH_CLAIMS_URL . 'assets/images/fresh-masala-logo.png' ); ?>" alt="" width="664" height="376" />
+					<div class="fm-reveal-diyas"><?php for ( $lamp = 0; $lamp < 3; $lamp++ ) : ?><img src="<?php echo esc_url( FM_CASH_CLAIMS_URL . 'assets/images/tihar-diya.svg' ); ?>" alt="" width="52" height="52" /><?php endfor; ?></div>
+					<strong><?php esc_html_e( 'A little light.', 'fm-cash-claims' ); ?><br /><?php esc_html_e( 'A lovely surprise.', 'fm-cash-claims' ); ?></strong>
+					<small><?php esc_html_e( 'Your Tihar gift is opening…', 'fm-cash-claims' ); ?></small>
+				</div>
 			</div>
-			<h1 id="fm-claim-title"><?php esc_html_e( 'A tasty little win.', 'fm-cash-claims' ); ?></h1>
+			<h1 id="fm-claim-title"><?php esc_html_e( 'Your Tihar just got brighter.', 'fm-cash-claims' ); ?></h1>
 			<p class="fm-claim-intro">
 				<?php
 				printf(

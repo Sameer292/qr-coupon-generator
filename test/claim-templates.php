@@ -29,6 +29,11 @@ foreach ( array( array(), array( 'Please enter a valid phone number.' ) ) as $er
 	if ( $errors && ! str_contains( $html, $errors[0] ) ) {
 		throw new RuntimeException( 'Validation errors missing.' );
 	}
+	foreach ( array( 'fresh-masala-logo.png', 'garam-masala.png', 'momo-masala.png', 'tea-masala.png', 'tihar-diya.svg' ) as $image ) {
+		if ( ! str_contains( $html, 'assets/images/' . $image ) || ! is_readable( FM_CASH_CLAIMS_DIR . 'assets/images/' . $image ) ) {
+			throw new RuntimeException( 'Bundled campaign image missing: ' . $image );
+		}
+	}
 }
 
 $claim = (object) array(
@@ -41,6 +46,9 @@ include FM_CASH_CLAIMS_DIR . 'templates/claim-success.php';
 $html = ob_get_clean();
 if ( ! str_contains( $html, $prize_display ) || ! str_contains( $html, 'data-fm-reveal' ) || ! str_contains( $html, $claim->claim_ref ) ) {
 	throw new RuntimeException( 'Successful claim must reveal the saved prize and reference.' );
+}
+if ( ! str_contains( $html, 'fm-reveal-shutter-left' ) || ! str_contains( $html, 'fm-reveal-shutter-right' ) ) {
+	throw new RuntimeException( 'Tihar reveal curtains missing.' );
 }
 
 ob_start();
