@@ -396,7 +396,6 @@ final class FM_Cash_Claims_Claim {
 		$settings      = FM_Cash_Claims_Settings::get_all();
 		$claim_url     = FM_Cash_Claims_Util::claim_url( (string) $coupon->qr_token );
 		$nonce         = wp_create_nonce( 'fm_cash_claim_' . (int) $coupon->id );
-		$prize_display = FM_Cash_Claims_Util::format_amount( (float) $coupon->prize_amount, (string) $coupon->currency );
 
 		include FM_CASH_CLAIMS_DIR . 'templates/claim-form.php';
 		exit;
@@ -441,6 +440,7 @@ final class FM_Cash_Claims_Claim {
 		header( 'X-Content-Type-Options: nosniff', true );
 
 		add_filter( 'wp_robots', array( $this, 'filter_robots' ) );
+		add_filter( 'show_admin_bar', '__return_false' );
 	}
 
 	public function filter_robots( array $robots ): array {

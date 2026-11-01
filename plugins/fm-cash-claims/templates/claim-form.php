@@ -8,7 +8,6 @@
  * @var object $batch
  * @var string $claim_url
  * @var string $nonce
- * @var string $prize_display
  * @var array  $settings
  * @var array  $errors
  * @var array  $old
@@ -20,40 +19,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-get_header();
+require FM_CASH_CLAIMS_DIR . 'templates/page-header.php';
 ?>
 <main class="fm-claim-page">
-	<div class="fm-claim-shell">
-		<div class="fm-claim-brand">
-			<span class="fm-claim-brand-mark">FM</span>
-			<span>
-				<strong>Fresh Masala</strong>
-				<small>Cash Prize Campaign</small>
-			</span>
-		</div>
-
-		<section class="fm-claim-card" aria-labelledby="fm-claim-title">
-			<div class="fm-claim-prize">
-				<span class="fm-claim-eyebrow">Your coupon is worth</span>
-				<strong><?php echo esc_html( $prize_display ); ?></strong>
-				<span class="fm-claim-prize-caption">Cash prize</span>
+	<div class="fm-claim-shell fm-claim-layout">
+		<section class="fm-claim-story" aria-labelledby="fm-claim-title">
+			<h1 id="fm-claim-title"><?php esc_html_e( 'A little spice.', 'fm-cash-claims' ); ?><br /><?php esc_html_e( 'A big surprise.', 'fm-cash-claims' ); ?></h1>
+			<p><?php esc_html_e( 'Your Fresh Masala coupon has a cash prize waiting. Tell us a little about yourself to reveal it.', 'fm-cash-claims' ); ?></p>
+			<div class="fm-mystery-ticket" aria-hidden="true">
+				<span>Fresh Masala</span>
+				<div class="fm-ticket-amount">?</div>
+				<strong><?php esc_html_e( 'A delicious little mystery.', 'fm-cash-claims' ); ?></strong>
+				<small><?php esc_html_e( 'Yours to unwrap.', 'fm-cash-claims' ); ?></small>
 			</div>
+			<p class="fm-claim-story-note"><?php esc_html_e( 'One coupon. One claim. A moment worth celebrating.', 'fm-cash-claims' ); ?></p>
+		</section>
 
-			<h1 id="fm-claim-title"><?php esc_html_e( 'Claim your cash prize', 'fm-cash-claims' ); ?></h1>
+		<section class="fm-claim-card" aria-labelledby="fm-details-title">
+			<div class="fm-claim-coupon"><span><?php esc_html_e( 'Your coupon', 'fm-cash-claims' ); ?></span><strong><?php echo esc_html( (string) $coupon->coupon_code ); ?></strong></div>
+			<h2 id="fm-details-title"><?php esc_html_e( 'Make it yours.', 'fm-cash-claims' ); ?></h2>
 			<p class="fm-claim-intro">
-				<?php esc_html_e( 'Enter your details below. The first complete claim submission wins. Payment is made manually at the end of the day.', 'fm-cash-claims' ); ?>
+				<?php esc_html_e( 'Submit your details to claim your coupon and reveal your prize.', 'fm-cash-claims' ); ?>
 			</p>
-
-			<div class="fm-claim-meta">
-				<div>
-					<span><?php esc_html_e( 'Coupon code', 'fm-cash-claims' ); ?></span>
-					<strong><?php echo esc_html( (string) $coupon->coupon_code ); ?></strong>
-				</div>
-				<div>
-					<span><?php esc_html_e( 'Batch', 'fm-cash-claims' ); ?></span>
-					<strong><?php echo esc_html( (string) $batch->batch_id ); ?></strong>
-				</div>
-			</div>
 
 			<?php if ( array() !== $errors ) : ?>
 				<div class="fm-claim-alert fm-claim-alert-error" role="alert">
@@ -83,6 +70,7 @@ get_header();
 						name="claimant_name"
 						value="<?php echo esc_attr( (string) ( $old['claimant_name'] ?? '' ) ); ?>"
 						maxlength="120"
+						minlength="2"
 						autocomplete="name"
 						required
 					/>
@@ -98,9 +86,10 @@ get_header();
 						inputmode="numeric"
 						autocomplete="tel"
 						placeholder="9801234567"
+						aria-describedby="fm-phone-help"
 						required
 					/>
-					<small><?php esc_html_e( 'Use the number where you can be reached for payout.', 'fm-cash-claims' ); ?></small>
+					<small id="fm-phone-help"><?php esc_html_e( 'We will use this number to arrange your payout.', 'fm-cash-claims' ); ?></small>
 				</label>
 
 				<label class="fm-claim-field">
@@ -113,8 +102,9 @@ get_header();
 						inputmode="numeric"
 						autocomplete="off"
 						placeholder="<?php esc_attr_e( '9 digits', 'fm-cash-claims' ); ?>"
+						aria-describedby="fm-pan-help"
 					/>
-					<small><?php esc_html_e( 'Provide it only if you want it recorded for payout or tax purposes.', 'fm-cash-claims' ); ?></small>
+					<small id="fm-pan-help"><?php esc_html_e( 'Only if needed for your payout or tax records.', 'fm-cash-claims' ); ?></small>
 				</label>
 
 				<label class="fm-claim-check">
@@ -122,13 +112,13 @@ get_header();
 					<span><?php echo wp_kses_post( nl2br( esc_html( (string) $settings['terms_text'] ) ) ); ?></span>
 				</label>
 
-				<button type="submit" class="fm-claim-submit">
-					<?php esc_html_e( 'Submit claim', 'fm-cash-claims' ); ?>
+				<button type="submit" class="fm-claim-submit" data-fm-submitting="<?php esc_attr_e( 'Securing your claim…', 'fm-cash-claims' ); ?>">
+					<span><?php esc_html_e( 'Claim & reveal my prize', 'fm-cash-claims' ); ?></span><span aria-hidden="true">↗</span>
 				</button>
 			</form>
 
 			<p class="fm-claim-footnote">
-				<?php esc_html_e( 'Keep this coupon and your claim reference. Only one claim is allowed per coupon.', 'fm-cash-claims' ); ?>
+				<?php esc_html_e( 'Your amount stays a surprise until your claim is saved.', 'fm-cash-claims' ); ?>
 			</p>
 
 			<?php if ( ! empty( $settings['support_phone'] ) || ! empty( $settings['support_email'] ) || ! empty( $settings['support_address'] ) ) : ?>
@@ -152,10 +142,7 @@ get_header();
 			<?php endif; ?>
 		</section>
 
-		<p class="fm-claim-back">
-			<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( '← Back to Fresh Masala', 'fm-cash-claims' ); ?></a>
-		</p>
 	</div>
 </main>
 <?php
-get_footer();
+require FM_CASH_CLAIMS_DIR . 'templates/page-footer.php';

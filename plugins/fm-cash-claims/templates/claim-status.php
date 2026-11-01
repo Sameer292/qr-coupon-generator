@@ -22,18 +22,10 @@ $status           = (string) $claim->status;
 $submitted_display = get_date_from_gmt( (string) $claim->claimed_at, 'M j, Y g:i A' );
 $paid_display      = ! empty( $claim->paid_at ) ? get_date_from_gmt( (string) $claim->paid_at, 'M j, Y g:i A' ) : '';
 
-get_header();
+require FM_CASH_CLAIMS_DIR . 'templates/page-header.php';
 ?>
 <main class="fm-claim-page">
 	<div class="fm-claim-shell">
-		<div class="fm-claim-brand">
-			<span class="fm-claim-brand-mark">FM</span>
-			<span>
-				<strong>Fresh Masala</strong>
-				<small>Cash Prize Campaign</small>
-			</span>
-		</div>
-
 		<section class="fm-claim-card" aria-labelledby="fm-claim-title">
 			<div class="fm-claim-status-hero">
 				<span class="<?php echo esc_attr( FM_Cash_Claims_Util::status_class( $status ) ); ?>">
@@ -118,4 +110,4 @@ get_header();
 	</div>
 </main>
 <?php
-get_footer();
+require FM_CASH_CLAIMS_DIR . 'templates/page-footer.php';

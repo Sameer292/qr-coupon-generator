@@ -59,7 +59,7 @@ services:
       - |
         if ! wp core is-installed; then
           wp core install --url=http://localhost:8080 \
-            --title="Fresh Masala Plugin Preview" --admin_user=preview \
+            --title="Fresh Masala" --admin_user=preview \
             --admin_password="$$WP_ADMIN_PASSWORD" --admin_email=preview@example.test --skip-email
           wp option update timezone_string Asia/Kathmandu
           wp rewrite structure '/%postname%/'

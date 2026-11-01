@@ -45,7 +45,7 @@ The cash prize system is structured into two completely decoupled components:
 3. **Secret 32-Character QR Token**:
    The claim QR code encodes only:  
    `<claimBaseUrl>/?t=<32-character-url-safe-token>`  
-   Any pre-existing query parameters in `claimBaseUrl` are preserved.
+   Any pre-existing query parameters in `claimBaseUrl` are preserved. The initial claim page, including its HTML and validation errors, contains no prize amount.
 4. **First-Complete-Claim-Wins**:
    The winner is determined by who submits the valid claim form first. Row locks (`FOR UPDATE`) in a database transaction prevent race conditions or duplicate redemptions.
 5. **Privacy Protections on Status Pages**:
@@ -137,6 +137,12 @@ Included in the downloaded ZIP bundle as `batch-summary.json`:
    - Download the generated ZIP package (`coupons_cash_<BATCH_ID>.zip`).
 
 ### Step 2: WordPress Manifest Import
+Install or update the `fm-cash-claims` plugin through **Plugins → Add New → Upload
+Plugin** using its ZIP, then activate it. The archive must contain only the
+`fm-cash-claims/` plugin folder; the local Docker setup, sample manifests, database,
+and `.env` are not part of the deployment. If WordPress reports a route error,
+save **Settings → Permalinks** once.
+
 1. Log in to the WordPress admin panel.
 2. Navigate to **Cash Claims &rarr; Import**.
 3. Upload `manifest.csv` from the downloaded ZIP bundle.
@@ -153,13 +159,13 @@ Included in the downloaded ZIP bundle as `batch-summary.json`:
 ### Step 4: Customer Claim Submission
 1. Customer scans the QR code on their coupon using a smartphone.
 2. The phone opens `https://example.com/claim/?t=<32-char-token>`.
-3. The page reveals the **Cash Prize Amount** and displays the claim form.
+3. The page displays the claim form while keeping the **Cash Prize Amount** hidden.
 4. The claimant fills in:
    - Full Name (required)
    - Mobile Phone Number (required)
    - PAN Number (optional, 9 digits)
    - Agreement to Terms (required checkbox)
-5. Upon submission, the claimant is redirected to a success screen with their unique **Claim Reference** (e.g., `CLM-20261029-ABC123`).
+5. After a valid claim is saved, the claimant is redirected to a success screen. A sealed-prize animation reveals the **Cash Prize Amount**, followed by their unique **Claim Reference** (e.g., `CLM-20261029-ABC123`). Reduced-motion and no-JavaScript visitors see the result immediately. Reloads show the saved status without replaying the celebration or exposing claimant details.
 
 ### Step 5: End-of-Day Payout & Reconciliation
 1. At the end of each day, navigate to **Cash Claims &rarr; Claims** in WP Admin.
@@ -178,3 +184,17 @@ Included in the downloaded ZIP bundle as `batch-summary.json`:
 - [ ] **Secure Storage**: Store copies of `manifest.csv` in encrypted storage; remove them from shared downloads folders.
 - [ ] **Permalinks**: Ensure WordPress rewrite rules are active (`Settings > Permalinks > Save Changes`). If query parameter mode is preferred, `/?fm_cash_claim=1&t=<token>` works automatically.
 - [ ] **Batch Deletion Guards**: A batch cannot be deleted in WP Admin if any claims exist. To cancel an active campaign, set the batch status to `Closed` or `Void` instead of deleting.
+
+## 6. Claim Page Verification
+
+With the local WordPress site running, check the actual templates with:
+
+```bash
+docker compose run --rm -v "$PWD/test:/tmp/fm-tests:ro" --entrypoint wp setup eval-file /tmp/fm-tests/claim-templates.php
+```
+
+This checks that the amount is absent from initial forms and validation errors,
+success includes the saved prize, drafts remain escaped, and repeat status pages
+omit claimant details and the animated reveal. In a browser, submit an unused
+coupon and check the reveal once; repeat the flow with reduced motion and with
+JavaScript disabled. Both fallbacks must show the saved amount immediately.
