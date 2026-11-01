@@ -230,7 +230,8 @@ class FM_Verify {
 
 		// Enforce HTTPS safely on production domains without breaking local/dev.
 		$host     = $_SERVER['HTTP_HOST'] ?? '';
-		$is_local = ( 'localhost' === $host || str_starts_with( $host, '127.0.0.1' ) || str_ends_with( $host, '.local' ) || str_ends_with( $host, '.test' ) );
+		$hostname = strtolower( (string) wp_parse_url( 'http://' . $host, PHP_URL_HOST ) );
+		$is_local = ( in_array( $hostname, [ 'localhost', '127.0.0.1', '[::1]' ], true ) || str_ends_with( $hostname, '.local' ) || str_ends_with( $hostname, '.test' ) );
 		if ( ! $is_local && ! is_ssl() && ( empty( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) || 'https' !== strtolower( (string) $_SERVER['HTTP_X_FORWARDED_PROTO'] ) ) ) {
 			if ( ! empty( $host ) && ! empty( $_SERVER['REQUEST_URI'] ) ) {
 				$https_url = 'https://' . $host . $_SERVER['REQUEST_URI'];

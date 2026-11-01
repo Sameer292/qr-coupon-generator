@@ -109,6 +109,13 @@ bun run dev
 
 Open `http://localhost:5173` in your browser.
 
+### Local WordPress Plugin Preview
+
+To try both plugins before installing them on your live site, follow the
+[local WordPress preview guide](docs/local-wordpress.md). The Docker setup starts
+WordPress at `http://localhost:8080`, activates both plugins, and includes demo
+manifests for trying claim and verification pages.
+
 ### Verification & Build Scripts
 
 | Command | Purpose |

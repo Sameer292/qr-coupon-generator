@@ -25,7 +25,8 @@ final class FM_Cash_Claims_Claim {
 	public function init(): void {
 		add_action( 'init', array( $this, 'register_rewrite_rules' ) );
 		add_filter( 'query_vars', array( $this, 'query_vars' ) );
-		add_action( 'template_redirect', array( $this, 'handle_request' ) );
+		// Handle explicit claim routes before the draw plugin's legacy token fallback.
+		add_action( 'template_redirect', array( $this, 'handle_request' ), 9 );
 	}
 
 	public function register_rewrite_rules(): void {
