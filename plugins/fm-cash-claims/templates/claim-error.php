@@ -15,18 +15,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-get_header();
+require FM_CASH_CLAIMS_DIR . 'templates/page-header.php';
 ?>
 <main class="fm-claim-page">
 	<div class="fm-claim-shell">
-		<div class="fm-claim-brand">
-			<span class="fm-claim-brand-mark">FM</span>
-			<span>
-				<strong>Fresh Masala</strong>
-				<small>Cash Prize Campaign</small>
-			</span>
-		</div>
-
 		<section class="fm-claim-card fm-claim-card-error" aria-labelledby="fm-claim-title">
 			<div class="fm-claim-error-icon" aria-hidden="true">!</div>
 			<h1 id="fm-claim-title"><?php echo esc_html( $title ); ?></h1>
@@ -61,4 +53,4 @@ get_header();
 	</div>
 </main>
 <?php
-get_footer();
+require FM_CASH_CLAIMS_DIR . 'templates/page-footer.php';

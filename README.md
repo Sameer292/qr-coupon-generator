@@ -11,7 +11,7 @@ The platform supports two distinct promotional coupon campaigns:
 ### 1. Cash-Prize Claims (`/claim/?t=<token>`)
 * **Concept**: Fixed prize-tier batches where every coupon holds a guaranteed cash prize (e.g. 50 × Rs. 1,000, 200 × Rs. 500, 1,000 × Rs. 100).
 * **Artwork**: The actual prize amount is **never** printed on the physical card. The coupon features the prominent tagline `"GUARANTEED CASH PRIZE — SCAN TO REVEAL"`.
-* **Redemption Model**: First complete claim submission wins. Scanning the QR reveals the prize amount and prompts for claimant details (name, phone, optional 9-digit PAN).
+* **Redemption Model**: First complete claim submission wins. Scanning opens the claimant form (name, phone, optional 9-digit PAN). The prize amount is revealed only after a successful submission.
 * **Payout**: Manual end-of-day payout by admins from verified submissions.
 * **WordPress Plugin**: `plugins/fm-cash-claims/` (menu: **Cash Claims**).
 * **Documentation**: See [docs/cash-prize-claims.md](docs/cash-prize-claims.md) for full architecture and runbook.
@@ -108,6 +108,13 @@ bun run dev
 ```
 
 Open `http://localhost:5173` in your browser.
+
+### Local WordPress Plugin Preview
+
+To try both plugins before installing them on your live site, follow the
+[local WordPress preview guide](docs/local-wordpress.md). The Docker setup starts
+WordPress at `http://localhost:8080`, activates both plugins, and includes demo
+manifests for trying claim and verification pages.
 
 ### Verification & Build Scripts
 

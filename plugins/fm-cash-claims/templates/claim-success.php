@@ -20,37 +20,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $submitted_display = get_date_from_gmt( (string) $claim->claimed_at, 'M j, Y g:i A' );
 
-get_header();
+require FM_CASH_CLAIMS_DIR . 'templates/page-header.php';
 ?>
 <main class="fm-claim-page">
 	<div class="fm-claim-shell">
-		<div class="fm-claim-brand">
-			<span class="fm-claim-brand-mark">FM</span>
-			<span>
-				<strong>Fresh Masala</strong>
-				<small>Cash Prize Campaign</small>
-			</span>
-		</div>
-
 		<section class="fm-claim-card fm-claim-card-success" aria-labelledby="fm-claim-title">
-			<div class="fm-claim-success-icon" aria-hidden="true">✓</div>
-			<p class="fm-claim-eyebrow fm-claim-eyebrow-dark"><?php esc_html_e( 'Claim recorded', 'fm-cash-claims' ); ?></p>
-			<h1 id="fm-claim-title"><?php esc_html_e( 'Your cash prize is locked in', 'fm-cash-claims' ); ?></h1>
+			<div class="fm-prize-reveal" data-fm-reveal>
+				<div class="fm-prize-reveal-content" role="status">
+					<span><?php esc_html_e( 'Your cash prize', 'fm-cash-claims' ); ?></span>
+					<strong class="fm-prize-amount"><?php echo esc_html( $prize_display ); ?></strong>
+					<p><?php esc_html_e( 'Wishing you a bright and joyful Tihar.', 'fm-cash-claims' ); ?></p>
+				</div>
+				<div class="fm-reveal-shutter fm-reveal-shutter-left" aria-hidden="true"></div>
+				<div class="fm-reveal-shutter fm-reveal-shutter-right" aria-hidden="true"></div>
+				<div class="fm-prize-seal" aria-hidden="true">
+					<img class="fm-seal-logo" src="<?php echo esc_url( FM_CASH_CLAIMS_URL . 'assets/images/fresh-masala-logo.png' ); ?>" alt="" width="664" height="376" />
+					<div class="fm-reveal-diyas"><?php for ( $lamp = 0; $lamp < 3; $lamp++ ) : ?><img src="<?php echo esc_url( FM_CASH_CLAIMS_URL . 'assets/images/tihar-diya.svg' ); ?>" alt="" width="52" height="52" /><?php endfor; ?></div>
+					<strong><?php esc_html_e( 'A little light.', 'fm-cash-claims' ); ?><br /><?php esc_html_e( 'A lovely surprise.', 'fm-cash-claims' ); ?></strong>
+					<small><?php esc_html_e( 'Your Tihar gift is opening…', 'fm-cash-claims' ); ?></small>
+				</div>
+			</div>
+			<h1 id="fm-claim-title"><?php esc_html_e( 'Your Tihar just got brighter.', 'fm-cash-claims' ); ?></h1>
 			<p class="fm-claim-intro">
 				<?php
 				printf(
 					/* translators: %s: claimant name */
-					esc_html__( 'Thank you, %s. Your claim was the first complete submission for this coupon.', 'fm-cash-claims' ),
+					esc_html__( 'Congratulations, %s! Your claim is saved. Our team will arrange your payout.', 'fm-cash-claims' ),
 					esc_html( (string) $claim->claimant_name )
 				);
 				?>
 			</p>
-
-			<div class="fm-claim-prize fm-claim-prize-compact">
-				<span class="fm-claim-eyebrow"><?php esc_html_e( 'Your prize', 'fm-cash-claims' ); ?></span>
-				<strong><?php echo esc_html( $prize_display ); ?></strong>
-				<span class="fm-claim-prize-caption"><?php esc_html_e( 'Cash prize', 'fm-cash-claims' ); ?></span>
-			</div>
 
 			<dl class="fm-claim-details">
 				<div>
@@ -116,4 +115,4 @@ get_header();
 	</div>
 </main>
 <?php
-get_footer();
+require FM_CASH_CLAIMS_DIR . 'templates/page-footer.php';

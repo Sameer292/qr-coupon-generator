@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 80" fill="none">
+  <defs><g id="flower"><circle r="13" fill="#DB982E"/><path d="M0-16 4-10 11-11 10-4 16 0 10 4 11 11 4 10 0 16-4 10-11 11-10 4-16 0-10-4-11-11-4-10Z" fill="#F3C35E"/><circle r="5" fill="#C58524"/></g></defs>
+  <path d="M-20 3Q150 88 300 4 450 88 620 3" stroke="#DEB65E" stroke-width="2"/>
+  <use href="#flower" x="55" y="30"/><use href="#flower" x="115" y="43"/><use href="#flower" x="180" y="40"/><use href="#flower" x="240" y="23"/><use href="#flower" x="355" y="30"/><use href="#flower" x="415" y="43"/><use href="#flower" x="480" y="40"/><use href="#flower" x="540" y="23"/>
+</svg>

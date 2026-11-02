@@ -1,583 +1,177 @@
-/**
- * Fresh Masala cash claim page styles.
- * Scoped to .fm-claim-page so the active theme is not affected.
- */
+@font-face { font-family: "Public Sans"; font-style: normal; font-weight: 400 800; font-display: swap; src: url("../fonts/public-sans-latin.woff2") format("woff2"); }
 
-.fm-claim-page,
-.fm-claim-page * {
-	box-sizing: border-box;
-}
-
-.fm-claim-page {
-	--fm-ink: #1c1917;
-	--fm-muted: #78716c;
-	--fm-cream: #fffbf5;
-	--fm-line: #e7e5e4;
-	--fm-red: #b91c1c;
-	--fm-red-dark: #7f1d1d;
-	--fm-amber: #f59e0b;
-	--fm-green: #047857;
-	min-height: 100vh;
+/** Campaign styles are scoped so the site's other pages retain their theme. */
+.fm-cash-campaign {
+	--fm-ink: #203b34;
+	--fm-muted: #617269;
+	--fm-paper: #f6faf7;
+	--fm-line: #dce5df;
+	--fm-accent: #087b65;
+	--fm-accent-dark: #123e33;
+	--fm-gold: #f2c66e;
+	--fm-green: #246747;
+	--fm-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 	margin: 0;
-	padding: 40px 16px 64px;
-	background:
-		radial-gradient(circle at 15% 10%, rgba(245, 158, 11, 0.18), transparent 32rem),
-		radial-gradient(circle at 85% 90%, rgba(185, 28, 28, 0.25), transparent 30rem),
-		linear-gradient(135deg, #1c1917 0%, #292524 55%, #450a0a 100%);
+	background: var(--fm-paper);
 	color: var(--fm-ink);
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 	font-size: 16px;
 	line-height: 1.55;
 }
-
-.fm-claim-shell {
-	width: 100%;
-	max-width: 680px;
-	margin: 0 auto;
-}
-
-.fm-claim-brand {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	margin: 0 0 18px;
-	color: #fef3c7;
-}
-
-.fm-claim-brand-mark {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 42px;
-	height: 42px;
-	border-radius: 12px;
-	background: linear-gradient(135deg, #dc2626, #f59e0b);
-	color: #1c1917;
-	font-size: 15px;
-	font-weight: 900;
-	letter-spacing: -0.04em;
-	box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
-}
-
-.fm-claim-brand strong,
-.fm-claim-brand small {
-	display: block;
-}
-
-.fm-claim-brand strong {
-	font-size: 16px;
-	font-weight: 800;
-	letter-spacing: 0.02em;
-}
-
-.fm-claim-brand small {
-	color: #d6d3d1;
-	font-size: 11px;
-	font-weight: 600;
-	letter-spacing: 0.12em;
-	text-transform: uppercase;
-}
-
-.fm-claim-card {
-	position: relative;
-	padding: 32px;
-	border: 1px solid rgba(255, 255, 255, 0.12);
-	border-radius: 24px;
-	background: var(--fm-cream);
-	box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
-}
-
-.fm-claim-card h1 {
-	margin: 0 0 8px;
-	color: var(--fm-ink);
-	font-size: clamp(1.6rem, 4vw, 2.25rem);
-	font-weight: 900;
-	line-height: 1.12;
-	letter-spacing: -0.035em;
-}
-
-.fm-claim-intro {
-	margin: 0 0 20px;
-	color: #57534e;
-	font-size: 14px;
-	line-height: 1.6;
-}
-
-.fm-claim-eyebrow {
-	display: block;
-	margin: 0 0 2px;
-	color: #fde68a;
-	font-size: 10px;
-	font-weight: 800;
-	letter-spacing: 0.14em;
-	text-transform: uppercase;
-}
-
-.fm-claim-eyebrow-dark {
-	color: var(--fm-red);
-}
-
-.fm-claim-prize {
-	margin: 0 0 22px;
-	padding: 24px;
-	border-radius: 18px;
-	background:
-		linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 45%),
-		linear-gradient(135deg, var(--fm-red-dark), #9a3412 55%, #b45309);
-	color: #fffbeb;
-	text-align: center;
-	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.fm-claim-prize strong {
-	display: block;
-	margin: 2px 0;
-	font-size: clamp(2rem, 7vw, 3.2rem);
-	font-weight: 900;
-	line-height: 1;
-	letter-spacing: -0.04em;
-}
-
-.fm-claim-prize-caption {
-	display: block;
-	color: #fde68a;
-	font-size: 11px;
-	font-weight: 700;
-	letter-spacing: 0.1em;
-	text-transform: uppercase;
-}
-
-.fm-claim-prize-compact {
-	margin-bottom: 20px;
-	padding: 18px;
-}
-
-.fm-claim-meta {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 10px;
-	margin: 0 0 20px;
-}
-
-.fm-claim-meta > div {
-	padding: 10px 12px;
-	border: 1px solid var(--fm-line);
-	border-radius: 10px;
-	background: #fff;
-}
-
-.fm-claim-meta span,
-.fm-claim-details dt {
-	display: block;
-	color: var(--fm-muted);
-	font-size: 10px;
-	font-weight: 800;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-}
-
-.fm-claim-meta strong,
-.fm-claim-details dd {
-	display: block;
-	margin: 2px 0 0;
-	color: var(--fm-ink);
-	font-size: 13px;
-	font-weight: 700;
-	overflow-wrap: anywhere;
-}
-
-.fm-claim-alert {
-	margin: 0 0 18px;
-	padding: 14px 16px;
-	border-radius: 12px;
-	font-size: 13px;
-}
-
-.fm-claim-alert-error {
-	border: 1px solid #fecaca;
-	background: #fef2f2;
-	color: #991b1b;
-}
-
-.fm-claim-alert ul {
-	margin: 6px 0 0;
-	padding-left: 18px;
-}
-
-.fm-claim-form {
-	display: grid;
-	gap: 16px;
-}
-
-.fm-claim-field {
-	display: grid;
-	gap: 6px;
-}
-
-.fm-claim-field > span {
-	color: #44403c;
-	font-size: 12px;
-	font-weight: 800;
-}
-
-.fm-claim-field b {
-	color: var(--fm-red);
-}
-
-.fm-claim-field em {
-	margin-left: 4px;
-	color: var(--fm-muted);
-	font-size: 10px;
-	font-style: normal;
-	font-weight: 600;
-	letter-spacing: 0.03em;
-}
-
-.fm-claim-field input {
-	width: 100%;
-	min-height: 46px;
-	padding: 10px 12px;
-	border: 1px solid #d6d3d1;
-	border-radius: 10px;
-	background: #fff;
-	color: var(--fm-ink);
-	font-family: inherit;
-	font-size: 16px;
-	line-height: 1.3;
-	outline: none;
-	transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.fm-claim-field input:focus {
-	border-color: var(--fm-amber);
-	box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
-}
-
-.fm-claim-field small {
-	color: var(--fm-muted);
-	font-size: 11px;
-	line-height: 1.4;
-}
-
-.fm-claim-check {
-	display: flex;
-	align-items: flex-start;
-	gap: 10px;
-	padding: 14px;
-	border: 1px solid var(--fm-line);
-	border-radius: 12px;
-	background: #fff;
-	color: #44403c;
-	font-size: 12px;
-	line-height: 1.5;
-}
-
-.fm-claim-check input {
-	width: 18px;
-	height: 18px;
-	margin: 1px 0 0;
-	accent-color: var(--fm-red);
-	flex: 0 0 auto;
-}
-
-.fm-claim-submit,
-.fm-claim-secondary {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	min-height: 48px;
-	padding: 12px 20px;
-	border-radius: 12px;
-	font-family: inherit;
-	font-size: 14px;
-	font-weight: 800;
-	text-decoration: none;
-	cursor: pointer;
-	transition: transform 0.15s ease, filter 0.15s ease, background-color 0.15s ease;
-}
-
-.fm-claim-submit {
-	border: 0;
-	background: linear-gradient(135deg, #dc2626, #b45309);
-	color: #fffbeb;
-	box-shadow: 0 12px 28px rgba(185, 28, 28, 0.25);
-}
-
-.fm-claim-submit:hover {
-	filter: brightness(1.08);
-	transform: translateY(-1px);
-}
-
-.fm-claim-submit:active {
-	transform: translateY(0);
-}
-
-.fm-claim-secondary {
-	border: 1px solid #d6d3d1;
-	background: #fff;
-	color: #44403c;
-}
-
-.fm-claim-secondary:hover {
-	background: #fafaf9;
-}
-
-.fm-claim-footnote {
-	margin: 16px 0 0;
-	color: var(--fm-muted);
-	font-size: 11px;
-	line-height: 1.5;
-	text-align: center;
-}
-
-.fm-claim-support {
-	display: grid;
-	gap: 3px;
-	margin: 20px 0 0;
-	padding: 14px 16px;
-	border: 1px dashed #d6d3d1;
-	border-radius: 12px;
-	background: #fafaf9;
-	color: #57534e;
-	font-size: 12px;
-}
-
-.fm-claim-support strong {
-	color: var(--fm-ink);
-	font-size: 12px;
-}
-
-.fm-claim-support a {
-	color: var(--fm-red);
-	font-weight: 700;
-	text-decoration: underline;
-	text-underline-offset: 2px;
-}
-
-.fm-claim-support-address {
-	display: block;
-	white-space: pre-line;
-	line-height: 1.5;
-}
-
-.fm-claim-back {
-	margin: 18px 0 0;
-	text-align: center;
-}
-
-.fm-claim-back a {
-	color: #d6d3d1;
-	font-size: 12px;
-	font-weight: 700;
-	text-decoration: none;
-}
-
-.fm-claim-back a:hover {
-	color: #fffbeb;
-}
-
-.fm-claim-details {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 1px;
-	margin: 0 0 20px;
-	overflow: hidden;
-	border: 1px solid var(--fm-line);
-	border-radius: 12px;
-	background: var(--fm-line);
-}
-
-.fm-claim-details > div {
-	padding: 12px 14px;
-	background: #fff;
-}
-
-.fm-claim-details dd {
-	font-size: 13px;
-}
-
-.fm-claim-ref {
-	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-	font-size: 12px !important;
-	letter-spacing: 0.02em;
-}
-
-.fm-claim-next {
-	margin: 0 0 20px;
-	padding: 16px;
-	border: 1px solid #fde68a;
-	border-radius: 12px;
-	background: #fffbeb;
-	color: #78350f;
-	font-size: 12px;
-	line-height: 1.55;
-}
-
-.fm-claim-next strong {
-	display: block;
-	margin-bottom: 4px;
-	color: #92400e;
-	font-size: 12px;
-}
-
-.fm-claim-next p {
-	margin: 0;
-}
-
-.fm-claim-next ol {
-	margin: 6px 0 0;
-	padding-left: 18px;
-}
-
-.fm-claim-actions {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 10px;
-}
-
-.fm-claim-actions .fm-claim-submit,
-.fm-claim-actions .fm-claim-secondary {
-	flex: 1 1 200px;
-}
-
-.fm-claim-success-icon,
-.fm-claim-error-icon {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 54px;
-	height: 54px;
-	margin: 0 0 16px;
-	border-radius: 16px;
-	font-size: 26px;
-	font-weight: 900;
-}
-
-.fm-claim-success-icon {
-	border: 1px solid #a7f3d0;
-	background: #ecfdf5;
-	color: var(--fm-green);
-}
-
-.fm-claim-error-icon {
-	border: 1px solid #fecaca;
-	background: #fef2f2;
-	color: var(--fm-red);
-}
-
-.fm-claim-status-hero {
-	margin-bottom: 20px;
+.fm-cash-campaign *, .fm-cash-campaign *::before, .fm-cash-campaign *::after { box-sizing: border-box; }
+.fm-cash-campaign a { color: inherit; }
+.fm-cash-campaign :focus-visible { outline: 3px solid var(--fm-accent); outline-offset: 4px; }
+.fm-claim-header, .fm-claim-footer { width: min(1080px, calc(100% - 64px)); margin-inline: auto; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.fm-claim-header { padding-block: 16px; }
+.fm-claim-logo { display: block; width: 178px; height: 100px; object-fit: contain; margin: -14px -24px; }
+.fm-claim-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.fm-claim-header-note { display: inline-flex; align-items: center; gap: 10px; color: var(--fm-muted); font-size: 13px; }
+.fm-claim-page { padding: 24px 32px 48px; }
+.fm-claim-shell { width: 100%; max-width: 680px; margin-inline: auto; }
+.fm-claim-layout { display: grid; grid-template-columns: 0.94fr 1.06fr; gap: 24px; align-items: stretch; max-width: 1080px; }
+.fm-claim-story { background: var(--fm-accent-dark); color: var(--fm-paper); padding: 78px 36px 32px; border-radius: 32px; background-image: url("../images/tihar-garland.svg"); background-repeat: no-repeat; background-size: 100% auto; display: flex; flex-direction: column; }
+.fm-claim-story h1 { margin: 0; font: 700 clamp(34px, 3.1vw, 44px)/1.15 "Public Sans", sans-serif; letter-spacing: -.045em; }
+.fm-claim-story > p { margin: 20px 0 0; font-size: 16px; line-height: 1.65; max-width: 35ch; }
+.fm-claim-card { background: #fff; padding: 40px; border-radius: 32px; }
+
+.fm-claim-card h1, .fm-claim-card h2 { margin: 0 0 12px; font-family: "Public Sans", sans-serif; font-weight: 700; letter-spacing: -.04em; line-height: 1.15; color: var(--fm-ink); }
+.fm-claim-card h1 { font-size: 30px; }
+.fm-claim-card h2 { font-size: 28px; }
+.fm-claim-intro { margin: 0 0 28px; color: var(--fm-muted); font-size: 15px; line-height: 1.65; }
+.fm-claim-coupon { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 28px; font-size: 13px; color: var(--fm-muted); }
+.fm-claim-coupon strong { color: var(--fm-ink); font-weight: 600; overflow-wrap: anywhere; }
+.fm-claim-form { display: grid; gap: 20px; }
+.fm-claim-field { display: grid; gap: 8px; }
+.fm-claim-field > span { font-size: 14px; font-weight: 600; }
+.fm-claim-field b { color: var(--fm-accent); }
+.fm-claim-field em { margin-left: 4px; color: var(--fm-muted); font-size: 13px; font-style: normal; font-weight: 400; }
+.fm-claim-field input { display: block; width: 100%; min-height: 50px; padding: 12px 14px; border: 1px solid var(--fm-line); border-radius: 16px; background: #fff; color: var(--fm-ink); font: inherit; font-size: 16px; line-height: 1.4; transition: border-color 160ms ease; }
+.fm-claim-field input::placeholder { color: #7b867e; opacity: 1; }
+.fm-claim-field input:focus { border-color: var(--fm-accent); }
+.fm-claim-field small { font-size: 13px; color: var(--fm-muted); }
+.fm-claim-check { display: flex; align-items: flex-start; gap: 12px; color: var(--fm-muted); font-size: 13px; line-height: 1.7; cursor: pointer; }
+.fm-claim-check input { width: 20px; height: 20px; flex-shrink: 0; margin: 2px 0 0; accent-color: var(--fm-accent); }
+.fm-claim-submit, .fm-claim-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 16px; min-height: 54px; padding: 14px 22px; border: 0; border-radius: 999px; font-family: inherit; font-size: 15px; font-weight: 600; line-height: 1.4; text-decoration: none; cursor: pointer; transition: background-color 160ms ease, transform 160ms var(--fm-ease-out); }
+.fm-cash-campaign .fm-claim-submit { background: var(--fm-accent); color: #fff; }
+.fm-claim-form .fm-claim-submit { justify-content: space-between; }
+.fm-claim-submit:active { transform: scale(.98); }
+.fm-claim-submit:disabled { cursor: wait; opacity: .75; }
+.fm-cash-campaign .fm-claim-secondary { background: var(--fm-paper); color: var(--fm-ink); }
+@media (hover: hover) and (pointer: fine) {
+	.fm-claim-submit:hover { background: var(--fm-accent-dark); }
+	.fm-claim-secondary:hover { background: #edf3ed; }
+}
+.fm-claim-footnote { margin: 14px 0 0; text-align: center; color: var(--fm-muted); font-size: 13px; }
+.fm-claim-support { display: grid; gap: 6px; margin-top: 28px; color: var(--fm-muted); font-size: 13px; }
+.fm-claim-support strong { color: var(--fm-ink); }
+.fm-claim-support a { text-underline-offset: 3px; }
+.fm-claim-support-address { white-space: pre-line; }
+.fm-claim-footer { padding-block: 16px 32px; font-size: 13px; color: var(--fm-muted); }
+.fm-claim-footer > span:first-child { font-weight: 600; }
+.fm-claim-alert { padding: 16px; margin: 0 0 24px; border-radius: 16px; background: #fbede9; color: #882e27; font-size: 14px; }
+.fm-claim-alert ul { padding-left: 18px; margin: 8px 0 0; }
+.fm-claim-details { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 28px 0; }
+.fm-claim-details > div { min-width: 0; }
+.fm-claim-details > div:first-child { grid-column: 1 / -1; }
+.fm-claim-details dt { color: var(--fm-muted); font-size: 13px; margin-bottom: 4px; }
+.fm-claim-details dd { margin: 0; overflow-wrap: anywhere; font-size: 14px; font-weight: 600; }
+.fm-claim-ref { letter-spacing: .02em; }
+.fm-claim-next { padding: 24px; margin-bottom: 24px; background: var(--fm-paper); border-radius: 16px; font-size: 14px; }
+.fm-claim-next strong { display: block; margin-bottom: 8px; font-weight: 600; }
+.fm-claim-next p { margin: 0; }
+.fm-claim-next ol { margin: 0; padding-left: 18px; }
+.fm-claim-next li + li { margin-top: 6px; }
+.fm-claim-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.fm-claim-actions > * { flex: 1 1 220px; }
+.fm-claim-error-icon { color: var(--fm-accent); font: 48px/1 Georgia, serif; margin-bottom: 20px; }
+.fm-claim-status-hero { margin-bottom: 28px; }
+.fm-claim-status-hero .fm-status { margin-bottom: 16px; }
+.fm-status { display: inline-block; padding: 4px 8px; border-radius: 16px; font-size: 13px; font-weight: 600; }
+.fm-status-pending { background: #f9edce; color: #795315; }
+.fm-status-paid { background: #e6f1e9; color: var(--fm-green); }
+.fm-status-rejected { background: #fbede9; color: #882e27; }
+.fm-claim-prize { background: var(--fm-accent-dark); color: var(--fm-paper); padding: 24px; border-radius: 16px; }
+.fm-claim-eyebrow, .fm-claim-prize-caption { display: block; font-size: 14px; }
+.fm-claim-prize strong { display: block; font: 700 48px/1.3 "Public Sans", sans-serif; color: var(--fm-gold); overflow-wrap: anywhere; }
+.fm-claim-story .fm-festival-greeting { margin: 0 0 14px; font-size: 13px; color: var(--fm-gold); font-weight: 600; }
+.fm-festive-products { margin: 12px -16px 28px; }
+.fm-product-display { position: relative; height: 310px; }
+.fm-product { position: absolute; bottom: 0; width: 48%; height: 100%; object-fit: contain; }
+.fm-product-tea { left: -1%; transform: rotate(-12deg) translateY(12px); }
+.fm-product-garam { left: 26%; z-index: 2; transform: translateY(-8px); }
+.fm-product-momo { right: -2%; transform: rotate(12deg) translateY(12px); }
+.fm-festive-products figcaption { color: #cee1d6; text-align: center; font-size: 13px; }
+.fm-festival-close { display: flex; align-items: center; gap: 14px; margin-top: auto; }
+.fm-festival-close img { flex-shrink: 0; }
+.fm-festival-close p { margin: 0; color: #cee1d6; font-size: 13px; line-height: 1.7; }
+.fm-prize-reveal { position: relative; isolation: isolate; overflow: hidden; display: grid; place-items: center; padding: 76px 24px 52px; margin: -40px -40px 32px; min-height: 352px; border-radius: 32px 32px 24px 24px; background: var(--fm-accent-dark) url("../images/tihar-garland.svg") center top / 100% auto no-repeat; text-align: center; color: var(--fm-paper); }
+.fm-prize-reveal-content { position: relative; width: 100%; }
+.fm-prize-reveal-content > span { font-size: 15px; }
+.fm-prize-amount { display: block; margin: 16px 0; font: 750 clamp(38px, 8vw, 72px)/1.15 "Public Sans", sans-serif; letter-spacing: -.055em; color: var(--fm-gold); overflow-wrap: anywhere; }
+.fm-prize-reveal-content > p { margin: 14px 0 0; font-size: 13px; }
+.fm-prize-seal { display: none; position: absolute; inset: 0; z-index: 2; align-items: center; justify-content: center; flex-direction: column; gap: 14px; color: var(--fm-paper); }
+.fm-seal-logo { width: 126px; height: 72px; object-fit: contain; margin: -12px 0; }
+.fm-prize-seal > strong { font: 650 26px/1.25 "Public Sans", sans-serif; letter-spacing: -.035em; }
+.fm-prize-seal > small { font-size: 13px; color: #cee1d6; }
+.fm-reveal-diyas { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.fm-reveal-shutter { display: none; position: absolute; top: 0; bottom: 0; width: 50.5%; z-index: 1; background: var(--fm-accent-dark); }
+.fm-reveal-shutter-left { left: 0; }
+.fm-reveal-shutter-right { right: 0; }
+/* A saved claim gets one deliberately paced Tihar celebration. */
+.fm-reveal-playing .fm-prize-seal { display: flex; animation: fm-seal-out 500ms cubic-bezier(0.77, 0, 0.175, 1) 1600ms both; }
+.fm-reveal-playing .fm-reveal-diyas img { animation: fm-lamp-in 500ms var(--fm-ease-out) both; }
+.fm-reveal-playing .fm-reveal-diyas img:nth-child(2) { animation-delay: 250ms; }
+.fm-reveal-playing .fm-reveal-diyas img:nth-child(3) { animation-delay: 500ms; }
+.fm-reveal-playing .fm-reveal-shutter { display: block; animation: fm-curtain-left 1000ms cubic-bezier(0.77, 0, 0.175, 1) 1700ms both; }
+.fm-reveal-playing .fm-reveal-shutter-right { animation-name: fm-curtain-right; }
+.fm-reveal-playing .fm-prize-reveal-content { animation: fm-prize-in 850ms var(--fm-ease-out) 2100ms both; }
+.fm-prize-confetti { position: absolute; top: 48%; z-index: 3; width: 8px; height: 13px; border-radius: 70% 0 70% 0; pointer-events: none; }
+@keyframes fm-seal-out { to { opacity: 0; transform: translateY(-24px) scale(.97); } }
+@keyframes fm-lamp-in { from { opacity: 0; transform: translateY(8px) scale(.95); } to { opacity: 1; transform: none; } }
+@keyframes fm-curtain-left { to { transform: translateX(-102%); } }
+@keyframes fm-curtain-right { to { transform: translateX(102%); } }
+@keyframes fm-prize-in { from { opacity: 0; transform: translateY(20px) scale(.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.fm-claim-honeypot { position: absolute !important; left: -9999px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; } /* taste-skill-ignore: offscreen spam honeypot, not a divider. */
+@media (max-width: 860px) {
+	.fm-claim-layout { max-width: 600px; grid-template-columns: 1fr; }
+	.fm-claim-story { padding: 72px 32px 28px; border-radius: 28px; }
+	.fm-claim-story h1 { font-size: 38px; }
+	.fm-product-display { height: 230px; max-width: 400px; margin-inline: auto; }
+	.fm-festival-close { display: none; }
+	.fm-claim-story > p { max-width: 42ch; margin-top: 16px; }
+	.fm-claim-layout .fm-claim-card { border-radius: 28px; }
 }
-
-.fm-claim-status-hero .fm-status {
-	margin-bottom: 10px;
-}
-
-.fm-claim-card-success .fm-claim-intro,
-.fm-claim-card-error .fm-claim-intro {
-	margin-bottom: 18px;
-}
-
-.fm-status {
-	display: inline-flex;
-	align-items: center;
-	gap: 5px;
-	padding: 4px 10px;
-	border-radius: 999px;
-	font-size: 10px;
-	font-weight: 900;
-	letter-spacing: 0.06em;
-	text-transform: uppercase;
-	white-space: nowrap;
-}
-
-.fm-status::before {
-	content: "";
-	width: 6px;
-	height: 6px;
-	border-radius: 50%;
-	background: currentColor;
-}
-
-.fm-status-pending {
-	border: 1px solid #fcd34d;
-	background: #fffbeb;
-	color: #92400e;
-}
-
-.fm-status-paid {
-	border: 1px solid #a7f3d0;
-	background: #ecfdf5;
-	color: var(--fm-green);
-}
-
-.fm-status-rejected {
-	border: 1px solid #fecaca;
-	background: #fef2f2;
-	color: var(--fm-red);
-}
-
-.fm-claim-honeypot {
-	position: absolute !important;
-	left: -9999px !important;
-	width: 1px !important;
-	height: 1px !important;
-	overflow: hidden !important;
-}
-
 @media (max-width: 560px) {
-	.fm-claim-page {
-		padding: 24px 12px 40px;
-	}
-
-	.fm-claim-card {
-		padding: 22px;
-		border-radius: 18px;
-	}
-
-	.fm-claim-meta,
-	.fm-claim-details {
-		grid-template-columns: 1fr;
-	}
-
-	.fm-claim-actions {
-		flex-direction: column;
-	}
-
-	.fm-claim-actions .fm-claim-submit,
-	.fm-claim-actions .fm-claim-secondary {
-		flex-basis: auto;
-		width: 100%;
-	}
+	.fm-claim-header, .fm-claim-footer { width: calc(100% - 40px); }
+	.fm-claim-header { padding-block: 12px; }
+	.fm-claim-header-note { display: none; }
+	.fm-claim-page { padding: 8px 20px 32px; }
+	.fm-claim-story { padding: 64px 24px 24px; }
+	.fm-claim-story h1 { font-size: 32px; }
+	.fm-claim-story > p { font-size: 14px; }
+	.fm-claim-layout { gap: 16px; }
+	.fm-product-display { height: 170px; }
+	.fm-festive-products { margin-bottom: 0; }
+	.fm-festive-products figcaption { font-size: 12px; margin-top: 4px; }
+	.fm-claim-card { padding: 28px 24px; }
+	.fm-claim-card h1, .fm-claim-card h2 { font-size: 26px; }
+	.fm-claim-coupon { margin-bottom: 24px; }
+	.fm-claim-form { gap: 18px; }
+	.fm-claim-check, .fm-claim-field small, .fm-claim-footnote { font-size: 13px; }
+	.fm-prize-reveal { margin: -28px -24px 28px; padding: 64px 16px 44px; min-height: 320px; border-radius: 28px 28px 22px 22px; }
+	.fm-prize-amount { font-size: clamp(32px, 10vw, 46px); }
+	.fm-claim-footer { align-items: flex-start; flex-direction: column; gap: 6px; }
 }
-
+@media (prefers-reduced-motion: reduce) {
+	.fm-cash-campaign *, .fm-cash-campaign *::before, .fm-cash-campaign *::after { animation: none !important; transition: none !important; }
+	.fm-prize-seal, .fm-reveal-shutter, .fm-prize-confetti { display: none !important; }
+	.fm-prize-reveal-content { opacity: 1 !important; transform: none !important; }
+}
 @media print {
-	.fm-claim-page {
-		padding: 0;
-		background: #fff;
-	}
-
-	.fm-claim-brand,
-	.fm-claim-back,
-	.fm-claim-support,
-	.fm-claim-actions {
-		display: none !important;
-	}
-
-	.fm-claim-card {
-		padding: 0;
-		border: 0;
-		box-shadow: none;
-	}
-
-	.fm-claim-prize {
-		background: #f5f5f4 !important;
-		color: #1c1917 !important;
-		box-shadow: none;
-	}
-
-	.fm-claim-prize .fm-claim-eyebrow,
-	.fm-claim-prize-caption {
-		color: #57534e !important;
-	}
+	.fm-cash-campaign { background: #fff; }
+	.fm-claim-header, .fm-claim-footer, .fm-claim-support, .fm-claim-actions, .fm-prize-seal, .fm-reveal-shutter, .fm-prize-confetti { display: none !important; }
+	.fm-claim-page, .fm-claim-card { padding: 0; }
+	.fm-prize-reveal { margin: 0 0 24px; background: #fff; color: #203b34; min-height: 0; }
+	.fm-prize-amount { color: #203b34; }
+	.fm-prize-reveal-content { animation: none !important; opacity: 1 !important; transform: none !important; }
 }

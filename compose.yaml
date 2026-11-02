@@ -1,0 +1,72 @@
+name: fresh-masala-preview
+
+services:
+  db:
+    image: mariadb:10.11
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wordpress
+      MARIADB_PASSWORD: ${WP_DB_PASSWORD:?Set WP_DB_PASSWORD in .env}
+      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  wordpress:
+    image: wordpress:6.8-php8.3-apache
+    ports:
+      - "127.0.0.1:8080:80"
+    environment: &wordpress-environment
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: ${WP_DB_PASSWORD:?Set WP_DB_PASSWORD in .env}
+      WORDPRESS_DEBUG: "1"
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_ENVIRONMENT_TYPE', 'local');
+        define('WP_DEBUG_DISPLAY', false);
+        define('WP_DEBUG_LOG', true);
+        define('DISALLOW_FILE_EDIT', true);
+    volumes: &wordpress-volumes
+      - wordpress_data:/var/www/html
+      - ./plugins/fm-cash-claims:/var/www/html/wp-content/plugins/fm-cash-claims:ro
+      - ./plugins/fm-festive-draw:/var/www/html/wp-content/plugins/fm-festive-draw:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "test", "-f", "/var/www/html/wp-config.php"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  setup:
+    image: wordpress:cli-php8.3
+    user: "33:33"
+    environment:
+      <<: *wordpress-environment
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD:?Set WP_ADMIN_PASSWORD in .env}
+    volumes: *wordpress-volumes
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-eu", "-c"]
+    command:
+      - |
+        if ! wp core is-installed; then
+          wp core install --url=http://localhost:8080 \
+            --title="Fresh Masala" --admin_user=preview \
+            --admin_password="$$WP_ADMIN_PASSWORD" --admin_email=preview@example.test --skip-email
+          wp option update timezone_string Asia/Kathmandu
+          wp rewrite structure '/%postname%/'
+        fi
+        wp plugin activate fm-cash-claims fm-festive-draw
+        wp rewrite flush --hard
+
+volumes:
+  db_data:
+  wordpress_data:

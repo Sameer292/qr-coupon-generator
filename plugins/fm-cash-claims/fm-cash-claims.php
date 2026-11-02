@@ -3,7 +3,7 @@
  * Plugin Name:       FM Cash Claims
  * Plugin URI:        https://freshmasala.com.np
  * Description:       Imports cash-prize coupon manifests, validates QR claims, stores claimant details, and provides a manual end-of-day payout dashboard.
- * Version:           1.0.0
+ * Version:           1.2.0
  * Requires at least: 6.2
  * Requires PHP:      8.1
  * Author:            Fresh Masala
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'FM_CASH_CLAIMS_VERSION', '1.0.0' );
+define( 'FM_CASH_CLAIMS_VERSION', '1.2.0' );
 define( 'FM_CASH_CLAIMS_FILE', __FILE__ );
 define( 'FM_CASH_CLAIMS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FM_CASH_CLAIMS_URL', plugin_dir_url( __FILE__ ) );
